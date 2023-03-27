@@ -18,10 +18,10 @@ public class testParser extends Parser {
 	public static final int
 		T__0=1, T__1=2;
 	public static final int
-		RULE_main = 0, RULE_proc = 1, RULE_fill = 2;
+		RULE_main = 0, RULE_nat = 1, RULE_seq = 2, RULE_var = 3;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"main", "proc", "fill"
+			"main", "nat", "seq", "var"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -88,8 +88,8 @@ public class testParser extends Parser {
 	}
 
 	public static class MainContext extends ParserRuleContext {
-		public ProcContext proc() {
-			return getRuleContext(ProcContext.class,0);
+		public NatContext nat() {
+			return getRuleContext(NatContext.class,0);
 		}
 		public TerminalNode EOF() { return getToken(testParser.EOF, 0); }
 		public MainContext(ParserRuleContext parent, int invokingState) {
@@ -104,9 +104,9 @@ public class testParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(6);
-			proc();
-			setState(7);
+			setState(8);
+			nat();
+			setState(9);
 			match(EOF);
 			}
 		}
@@ -121,58 +121,33 @@ public class testParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ProcContext extends ParserRuleContext {
-		public ProcContext(ParserRuleContext parent, int invokingState) {
+	public static class NatContext extends ParserRuleContext {
+		public List<SeqContext> seq() {
+			return getRuleContexts(SeqContext.class);
+		}
+		public SeqContext seq(int i) {
+			return getRuleContext(SeqContext.class,i);
+		}
+		public NatContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_proc; }
+		@Override public int getRuleIndex() { return RULE_nat; }
 	}
 
-	public final ProcContext proc() throws RecognitionException {
-		ProcContext _localctx = new ProcContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_proc);
+	public final NatContext nat() throws RecognitionException {
+		NatContext _localctx = new NatContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_nat);
 		try {
-			setState(15);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(10);
-				match(T__0);
-				}
-				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(11);
-				match(T__0);
-				}
-				break;
-			case 4:
-				enterOuterAlt(_localctx, 4);
-				{
-				setState(12);
-				match(T__0);
-				}
-				break;
-			case 5:
-				enterOuterAlt(_localctx, 5);
-				{
-				setState(13);
-				match(T__0);
-				}
-				break;
-			case 6:
-				enterOuterAlt(_localctx, 6);
-				{
-				}
-				break;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(11);
+			seq();
+			setState(12);
+			seq();
+			setState(13);
+			seq();
+			setState(14);
+			seq();
 			}
 		}
 		catch (RecognitionException re) {
@@ -186,42 +161,59 @@ public class testParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FillContext extends ParserRuleContext {
-		public FillContext(ParserRuleContext parent, int invokingState) {
+	public static class SeqContext extends ParserRuleContext {
+		public List<VarContext> var() {
+			return getRuleContexts(VarContext.class);
+		}
+		public VarContext var(int i) {
+			return getRuleContext(VarContext.class,i);
+		}
+		public SeqContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_fill; }
+		@Override public int getRuleIndex() { return RULE_seq; }
 	}
 
-	public final FillContext fill() throws RecognitionException {
-		FillContext _localctx = new FillContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_fill);
+	public final SeqContext seq() throws RecognitionException {
+		SeqContext _localctx = new SeqContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_seq);
 		try {
-			setState(21);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(18);
-				match(T__1);
-				}
-				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
-				{
-				}
-				break;
-			case 4:
-				enterOuterAlt(_localctx, 4);
-				{
-				}
-				break;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(16);
+			var();
+			setState(17);
+			match(T__0);
+			setState(18);
+			var();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VarContext extends ParserRuleContext {
+		public VarContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_var; }
+	}
+
+	public final VarContext var() throws RecognitionException {
+		VarContext _localctx = new VarContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_var);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(20);
+			match(T__1);
 			}
 		}
 		catch (RecognitionException re) {
@@ -236,15 +228,12 @@ public class testParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\4\32\4\2\t\2\4\3"+
-		"\t\3\4\4\t\4\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\22\n\3\3\4\3\4\3"+
-		"\4\3\4\5\4\30\n\4\3\4\2\2\5\2\4\6\2\2\2\36\2\b\3\2\2\2\4\21\3\2\2\2\6"+
-		"\27\3\2\2\2\b\t\5\4\3\2\t\n\7\2\2\3\n\3\3\2\2\2\13\22\3\2\2\2\f\22\7\3"+
-		"\2\2\r\22\7\3\2\2\16\22\7\3\2\2\17\22\7\3\2\2\20\22\3\2\2\2\21\13\3\2"+
-		"\2\2\21\f\3\2\2\2\21\r\3\2\2\2\21\16\3\2\2\2\21\17\3\2\2\2\21\20\3\2\2"+
-		"\2\22\5\3\2\2\2\23\30\3\2\2\2\24\30\7\4\2\2\25\30\3\2\2\2\26\30\3\2\2"+
-		"\2\27\23\3\2\2\2\27\24\3\2\2\2\27\25\3\2\2\2\27\26\3\2\2\2\30\7\3\2\2"+
-		"\2\4\21\27";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\4\31\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3"+
+		"\5\3\5\3\5\2\2\6\2\4\6\b\2\2\2\24\2\n\3\2\2\2\4\r\3\2\2\2\6\22\3\2\2\2"+
+		"\b\26\3\2\2\2\n\13\5\4\3\2\13\f\7\2\2\3\f\3\3\2\2\2\r\16\5\6\4\2\16\17"+
+		"\5\6\4\2\17\20\5\6\4\2\20\21\5\6\4\2\21\5\3\2\2\2\22\23\5\b\5\2\23\24"+
+		"\7\3\2\2\24\25\5\b\5\2\25\7\3\2\2\2\26\27\7\4\2\2\27\t\3\2\2\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
