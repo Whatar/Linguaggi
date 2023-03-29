@@ -1,6 +1,7 @@
-grammar ex1;
+grammar ex4;
 
-main: piece '1' piece '1' piece '1' piece '1' tail;
+main: content EOF;
 
-piece: | '0' piece;
-tail: | '0' tail | '1' tail;
+content: | 'a' content 'c' | 'b' ext 'c';
+
+ext: | 'b' ext 'c';

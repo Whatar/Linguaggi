@@ -1,6 +1,6 @@
 grammar ex1;
 
-main: a '1' a '1' a '1' a '1' b;
+main: piece '1' piece '1' piece '1' piece '1' tail;
 
-a: | '0' a;
-b: | '0' b | '1' b;
+piece: | '0' piece;
+tail: | '0' tail | '1' tail;

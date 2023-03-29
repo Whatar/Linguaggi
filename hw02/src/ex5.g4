@@ -1,7 +1,9 @@
-grammar ex4;
+grammar ex5;
 
-main: content EOF;
+main: condition EOF;
 
-content: | piece 'c';
+condition: equal | double;
 
-piece: 'a' | 'b' | 'a' piece 'c' | 'b' piece 'c';
+equal: | '0' equal '1';
+
+double: | '0' double '1' '1';
