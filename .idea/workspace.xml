@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f8b2469a-ec8d-459a-94e9-3170f0fc2cde" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/hw03/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hw03/ex1.g4" beforeDir="false" afterPath="$PROJECT_DIR$/hw03/src/ex1.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hw03/ex2.g4" beforeDir="false" afterPath="$PROJECT_DIR$/hw03/src/ex2.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hw03/test.g4" beforeDir="false" afterPath="$PROJECT_DIR$/hw03/src/test.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Old/hw03/antlr4-runtime-4.11.1.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +51,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680003159147</updated>
-      <workItem from="1680549593353" duration="1403000" />
+      <workItem from="1680549593353" duration="1728000" />
     </task>
     <servers />
   </component>
