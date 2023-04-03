@@ -1,17 +1,18 @@
 grammar ex2;
 
-prog: init prog | calc prog;
+main: start EOF;
 
-init: ID '=' exp ';' | EOF;
-calc: exp ';' | EOF;
+start: # end | init ';' start # initialization
+    | exp ';' start # expression;
+
+init: ID '=' exp;
 exp : INTEGER # integer
-| ID # identifier
-| LPAR exp PLUS exp RPAR # plus
-| LPAR exp MUL exp RPAR # mul
-| LPAR exp MINUS exp RPAR # minus
-| LPAR exp DIV exp RPAR # mul
-| LPAR exp MOD exp RPAR # mod
-;
+    | ID # identifier
+    | LPAR exp PLUS exp RPAR # plus
+    | LPAR exp MUL exp RPAR # mul
+    | LPAR exp MINUS exp RPAR # minus
+    | LPAR exp DIV exp RPAR # mul
+    | LPAR exp MOD exp RPAR # mod;
 
 LPAR : '(';
 RPAR : ')';
@@ -22,9 +23,10 @@ MINUS : '-';
 DIV : '/';
 MOD : 'mod';
 
-
+INTEGER : NEG | NAT;
+NEG: '-' [1-9][0-9]*;
 NAT : '0' | [1-9][0-9]*;
-NEG : '-' [1-9][0-9]*;
+
 ID: [a-z]+;
 
 WS : [ \n\t\r]+ -> skip;
