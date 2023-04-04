@@ -1,83 +1,89 @@
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import java.util.HashMap;
 
-public class ex2 extends ex2Visitor{
-
+public class ex2 extends ex2BaseVisitor<Integer>{
+    // memory HashMap
+    private HashMap<String, Integer> memory = new HashMap<>();
+    private Integer result;
 
     @Override
     public Integer visitMain(ex2Parser.MainContext ctx) {
-        return visit(ctx.exp());
+        return visit(ctx.start());
     }
 
     @Override
     public Integer visitEnd(ex2Parser.EndContext ctx) {
-        return null;
+        return null; // this is the last statement in the program we are interpreting
     }
 
     @Override
     public Integer visitInitialization(ex2Parser.InitializationContext ctx) {
-        return null;
+        visit(ctx.init());
+        return visit(ctx.start());
     }
 
     @Override
     public Integer visitExpression(ex2Parser.ExpressionContext ctx) {
-        return null;
+        visit(ctx.exp());
+        result = visit(ctx.exp());
+        return visit(ctx.start());
     }
 
     @Override
     public Integer visitInit(ex2Parser.InitContext ctx) {
+        // initialize the identifier, assigning the value of the expression to it
+        getMemory().put(ctx.ID().getText(), visit(ctx.exp()));
         return null;
     }
 
     @Override
     public Integer visitInteger(ex2Parser.IntegerContext ctx) {
-        return null;
+        return Integer.parseInt(ctx.INTEGER().getText());
     }
 
     @Override
     public Integer visitIdentifier(ex2Parser.IdentifierContext ctx) {
-        return null;
+        // returns the value of the identifier in memory
+        return getMemory().get(ctx.ID().getText());
     }
 
     @Override
     public Integer visitPlus(ex2Parser.PlusContext ctx) {
-        return null;
+        int left = visit(ctx.exp(0));
+        int right = visit(ctx.exp(1));
+
+        return left + right;
     }
 
     @Override
     public Integer visitMul(ex2Parser.MulContext ctx) {
-        return null;
+        int left = visit(ctx.exp(0));
+        int right = visit(ctx.exp(1));
+
+        return left * right;
     }
 
     @Override
     public Integer visitMinus(ex2Parser.MinusContext ctx) {
-        return null;
+        int left = visit(ctx.exp(0));
+        int right = visit(ctx.exp(1));
+
+        return left - right;
     }
 
     @Override
     public Integer visitMod(ex2Parser.ModContext ctx) {
-        return null;
+
+        int left = visit(ctx.exp(0));
+        int right = visit(ctx.exp(1));
+
+        return left % right;
     }
 
-    @Override
-    public Integer visit(ParseTree parseTree) {
-        return null;
+    public HashMap<String, Integer> getMemory() {
+        return memory;
     }
 
-    @Override
-    public Integer visitChildren(RuleNode ruleNode) {
-        return null;
-    }
-
-    @Override
-    public Integer visitTerminal(TerminalNode terminalNode) {
-        return null;
-    }
-
-    @Override
-    public Integer visitErrorNode(ErrorNode errorNode) {
-        return null;
+    public Integer getResult() {
+        return result;
     }
 }

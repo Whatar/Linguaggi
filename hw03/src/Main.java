@@ -8,11 +8,14 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        System.out.println("About to create the input stream");
+
         // Creating the input stream
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        InputStream is = System.in;
+        InputStream is = cl.getResourceAsStream(args[0]);
         CharStream cs = CharStreams.fromStream(is);
 
+        System.out.println("About to create the lexer and parser");
         // Creating the lexer
         ex2Lexer lexer = new ex2Lexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -20,6 +23,19 @@ public class Main {
 
         // Creating the parser
         ParseTree tree = parser.main();
-        System.out.println(tree.toStringTree(parser));
+
+        // Creating the interpreter
+        ex2 interpreter = new ex2();
+
+        System.out.println("About to run the interpreter");
+
+        // Running the interpreter
+        interpreter.visit(tree);
+
+        // Printing the memory
+        System.out.println("Mem: " + interpreter.getMemory());
+
+        // Printing the stored result
+        System.out.println("Result: " + interpreter.getResult());
     }
 }
