@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from C:/Users/leona/Documents/Github/Linguaggi/hw03/src\ex2.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -81,6 +81,13 @@ public class ex2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements ex
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitMinus(ex2Parser.MinusContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDiv(ex2Parser.DivContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

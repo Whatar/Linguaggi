@@ -1,3 +1,2 @@
-base = 5;
-height = ( base * 2);
-( base * height );
+a = (base + 1);
+(a + 2);

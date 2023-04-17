@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from C:/Users/leona/Documents/Github/Linguaggi/hw03/src\ex2.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class ex2Parser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.12.0", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -74,7 +74,7 @@ public class ex2Parser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "java-escape"; }
+	public String getGrammarFileName() { return "ex2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -287,6 +287,24 @@ public class ex2Parser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class DivContext extends ExpContext {
+		public TerminalNode LPAR() { return getToken(ex2Parser.LPAR, 0); }
+		public List<ExpContext> exp() {
+			return getRuleContexts(ExpContext.class);
+		}
+		public ExpContext exp(int i) {
+			return getRuleContext(ExpContext.class,i);
+		}
+		public TerminalNode DIV() { return getToken(ex2Parser.DIV, 0); }
+		public TerminalNode RPAR() { return getToken(ex2Parser.RPAR, 0); }
+		public DivContext(ExpContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ex2Visitor ) return ((ex2Visitor<? extends T>)visitor).visitDiv(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class IdentifierContext extends ExpContext {
 		public TerminalNode ID() { return getToken(ex2Parser.ID, 0); }
 		public IdentifierContext(ExpContext ctx) { copyFrom(ctx); }
@@ -343,7 +361,6 @@ public class ex2Parser extends Parser {
 		}
 		public TerminalNode MUL() { return getToken(ex2Parser.MUL, 0); }
 		public TerminalNode RPAR() { return getToken(ex2Parser.RPAR, 0); }
-		public TerminalNode DIV() { return getToken(ex2Parser.DIV, 0); }
 		public MulContext(ExpContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -452,7 +469,7 @@ public class ex2Parser extends Parser {
 				}
 				break;
 			case 6:
-				_localctx = new MulContext(_localctx);
+				_localctx = new DivContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(46);
