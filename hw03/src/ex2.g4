@@ -2,8 +2,9 @@ grammar ex2;
 
 main: start EOF;
 
-start: # end | init ';' start # initialization
-    | exp ';' start # expression;
+start: init ';' start # initialization
+| exp ';' start # expression
+| exp # last;
 
 init: ID '=' exp;
 exp : INTEGER # integer

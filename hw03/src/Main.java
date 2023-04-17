@@ -34,8 +34,5 @@ public class Main {
 
         // Printing the memory
         System.out.println("Mem: " + interpreter.getMemory());
-
-        // Printing the stored result
-        System.out.println("Result: " + interpreter.getResult());
     }
 }

@@ -6,7 +6,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/src/ex2.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="C:\Users\leona\Documents\Github\Linguaggi\hw03" />
+          <option name="outputDir" value="C:\Users\leona\Documents\Github\Linguaggi\hw03\src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="" />

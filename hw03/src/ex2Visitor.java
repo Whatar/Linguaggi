@@ -16,13 +16,6 @@ public interface ex2Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMain(ex2Parser.MainContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code end}
-	 * labeled alternative in {@link ex2Parser#start}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEnd(ex2Parser.EndContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code initialization}
 	 * labeled alternative in {@link ex2Parser#start}.
 	 * @param ctx the parse tree
@@ -36,6 +29,13 @@ public interface ex2Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression(ex2Parser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code last}
+	 * labeled alternative in {@link ex2Parser#start}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLast(ex2Parser.LastContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ex2Parser#init}.
 	 * @param ctx the parse tree

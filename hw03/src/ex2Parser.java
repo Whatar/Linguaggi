@@ -158,6 +158,18 @@ public class ex2Parser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class LastContext extends StartContext {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public LastContext(StartContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ex2Visitor ) return ((ex2Visitor<? extends T>)visitor).visitLast(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class InitializationContext extends StartContext {
 		public InitContext init() {
 			return getRuleContext(InitContext.class,0);
@@ -172,15 +184,6 @@ public class ex2Parser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class EndContext extends StartContext {
-		public EndContext(StartContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ex2Visitor ) return ((ex2Visitor<? extends T>)visitor).visitEnd(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 
 	public final StartContext start() throws RecognitionException {
 		StartContext _localctx = new StartContext(_ctx, getState());
@@ -190,33 +193,35 @@ public class ex2Parser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
-				_localctx = new EndContext(_localctx);
+				_localctx = new InitializationContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
+				setState(11);
+				init();
+				setState(12);
+				match(T__0);
+				setState(13);
+				start();
 				}
 				break;
 			case 2:
-				_localctx = new InitializationContext(_localctx);
+				_localctx = new ExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(12);
-				init();
-				setState(13);
+				setState(15);
+				exp();
+				setState(16);
 				match(T__0);
-				setState(14);
+				setState(17);
 				start();
 				}
 				break;
 			case 3:
-				_localctx = new ExpressionContext(_localctx);
+				_localctx = new LastContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(16);
+				setState(19);
 				exp();
-				setState(17);
-				match(T__0);
-				setState(18);
-				start();
 				}
 				break;
 			}
@@ -528,12 +533,12 @@ public class ex2Parser extends Parser {
 		"\u0000\u0000@\u0000\b\u0001\u0000\u0000\u0000\u0002\u0014\u0001\u0000"+
 		"\u0000\u0000\u0004\u0016\u0001\u0000\u0000\u0000\u0006:\u0001\u0000\u0000"+
 		"\u0000\b\t\u0003\u0002\u0001\u0000\t\n\u0005\u0000\u0000\u0001\n\u0001"+
-		"\u0001\u0000\u0000\u0000\u000b\u0015\u0001\u0000\u0000\u0000\f\r\u0003"+
-		"\u0004\u0002\u0000\r\u000e\u0005\u0001\u0000\u0000\u000e\u000f\u0003\u0002"+
-		"\u0001\u0000\u000f\u0015\u0001\u0000\u0000\u0000\u0010\u0011\u0003\u0006"+
-		"\u0003\u0000\u0011\u0012\u0005\u0001\u0000\u0000\u0012\u0013\u0003\u0002"+
-		"\u0001\u0000\u0013\u0015\u0001\u0000\u0000\u0000\u0014\u000b\u0001\u0000"+
-		"\u0000\u0000\u0014\f\u0001\u0000\u0000\u0000\u0014\u0010\u0001\u0000\u0000"+
+		"\u0001\u0000\u0000\u0000\u000b\f\u0003\u0004\u0002\u0000\f\r\u0005\u0001"+
+		"\u0000\u0000\r\u000e\u0003\u0002\u0001\u0000\u000e\u0015\u0001\u0000\u0000"+
+		"\u0000\u000f\u0010\u0003\u0006\u0003\u0000\u0010\u0011\u0005\u0001\u0000"+
+		"\u0000\u0011\u0012\u0003\u0002\u0001\u0000\u0012\u0015\u0001\u0000\u0000"+
+		"\u0000\u0013\u0015\u0003\u0006\u0003\u0000\u0014\u000b\u0001\u0000\u0000"+
+		"\u0000\u0014\u000f\u0001\u0000\u0000\u0000\u0014\u0013\u0001\u0000\u0000"+
 		"\u0000\u0015\u0003\u0001\u0000\u0000\u0000\u0016\u0017\u0005\r\u0000\u0000"+
 		"\u0017\u0018\u0005\u0002\u0000\u0000\u0018\u0019\u0003\u0006\u0003\u0000"+
 		"\u0019\u0005\u0001\u0000\u0000\u0000\u001a;\u0005\n\u0000\u0000\u001b"+
