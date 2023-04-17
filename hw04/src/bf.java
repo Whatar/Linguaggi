@@ -29,6 +29,7 @@ public class bf extends bfBaseVisitor<Integer>{
     public Integer visitComma(bfParser.CommaContext ctx) {
         // Try to read a character from the input stream
         try {
+            System.out.println("Input an Integer: ");
             memory.set(index, System.in.read());
         } catch (Exception e) {
             System.out.println("Error reading from input stream");
@@ -45,20 +46,29 @@ public class bf extends bfBaseVisitor<Integer>{
     @Override
     public Integer visitLt(bfParser.LtContext ctx) {
         index--;
+        if (index == -1){
+            // add a new element at the beginning of the list, and set the index to 0
+            memory.add(0, 0);
+            index = 0;
+        }
         return visit(ctx.com());
     }
 
     @Override
     public Integer visitGt(bfParser.GtContext ctx) {
         index++;
+        if (index == memory.size()){
+            // add a new element at the end of the list
+            memory.add(0);
+        }
         return visit(ctx.com());
     }
 
     public Integer visitLoop(bfParser.LoopContext ctx) {
         while (memory.get(index) != 0) {
-            visit((ParseTree) ctx.com());
+            visit(ctx.com().get(0));
         }
-        return visit((ParseTree) ctx.com());
+        return visit(ctx.com().get(1));
     }
 
     public List<Integer> getMemory() {
