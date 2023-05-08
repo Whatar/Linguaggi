@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from C:/Users/leona/Documents/Github/Linguaggi/hw03/src\ex2.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -16,13 +16,6 @@ public interface ex2Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMain(ex2Parser.MainContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code end}
-	 * labeled alternative in {@link ex2Parser#start}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEnd(ex2Parser.EndContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code initialization}
 	 * labeled alternative in {@link ex2Parser#start}.
 	 * @param ctx the parse tree
@@ -36,6 +29,13 @@ public interface ex2Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression(ex2Parser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code last}
+	 * labeled alternative in {@link ex2Parser#start}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLast(ex2Parser.LastContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ex2Parser#init}.
 	 * @param ctx the parse tree
@@ -77,6 +77,13 @@ public interface ex2Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMinus(ex2Parser.MinusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code div}
+	 * labeled alternative in {@link ex2Parser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDiv(ex2Parser.DivContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code mod}
 	 * labeled alternative in {@link ex2Parser#exp}.
