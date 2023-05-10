@@ -8,13 +8,18 @@ init : ID EQUAL exp SEMICOLON init    # idinit
      |                                # nilinit
      ;
 
-exp : LPAR exp TIMES exp RPAR       # mul
-    | LPAR exp DIV exp RPAR         # div
-    | LPAR exp MOD exp RPAR         # mod
-    | LPAR exp EXPONENT exp RPAR    # exponent
-    | LPAR exp PLUS exp RPAR        # plus
-    | LPAR exp MINUS exp RPAR       # minus
-    | exp op =( EXPONENT | MOD | TIMES | DIV | PLUS | MINUS) exp # expression
+exp : LPAR exp TIMES exp RPAR       # bmul
+    | LPAR exp DIV exp RPAR         # bdiv
+    | LPAR exp MOD exp RPAR         # bmod
+    | LPAR exp EXPONENT exp RPAR    # bexponent
+    | LPAR exp PLUS exp RPAR        # bplus
+    | LPAR exp MINUS exp RPAR       # bminus
+    | exp TIMES exp # mul
+    | exp DIV exp   # div
+    | exp MOD exp   # mod
+    | <assoc=right> exp EXPONENT exp # exponent
+    | exp PLUS exp  # plus
+    | exp MINUS exp # minus
     | NUM # num
     | ID  # id
     ;

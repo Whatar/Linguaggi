@@ -36,12 +36,12 @@ public interface floatExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNilinit(floatExpParser.NilinitContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code div}
+	 * Visit a parse tree produced by the {@code bdiv}
 	 * labeled alternative in {@link floatExpParser#exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDiv(floatExpParser.DivContext ctx);
+	T visitBdiv(floatExpParser.BdivContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code minus}
 	 * labeled alternative in {@link floatExpParser#exp}.
@@ -50,6 +50,13 @@ public interface floatExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMinus(floatExpParser.MinusContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code bminus}
+	 * labeled alternative in {@link floatExpParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBminus(floatExpParser.BminusContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code mod}
 	 * labeled alternative in {@link floatExpParser#exp}.
 	 * @param ctx the parse tree
@@ -57,12 +64,12 @@ public interface floatExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMod(floatExpParser.ModContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code expression}
+	 * Visit a parse tree produced by the {@code bplus}
 	 * labeled alternative in {@link floatExpParser#exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(floatExpParser.ExpressionContext ctx);
+	T visitBplus(floatExpParser.BplusContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code mul}
 	 * labeled alternative in {@link floatExpParser#exp}.
@@ -78,12 +85,19 @@ public interface floatExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNum(floatExpParser.NumContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code id}
+	 * Visit a parse tree produced by the {@code bmul}
 	 * labeled alternative in {@link floatExpParser#exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitId(floatExpParser.IdContext ctx);
+	T visitBmul(floatExpParser.BmulContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code bmod}
+	 * labeled alternative in {@link floatExpParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBmod(floatExpParser.BmodContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code plus}
 	 * labeled alternative in {@link floatExpParser#exp}.
@@ -91,6 +105,27 @@ public interface floatExpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPlus(floatExpParser.PlusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code div}
+	 * labeled alternative in {@link floatExpParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDiv(floatExpParser.DivContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code bexponent}
+	 * labeled alternative in {@link floatExpParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBexponent(floatExpParser.BexponentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code id}
+	 * labeled alternative in {@link floatExpParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitId(floatExpParser.IdContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exponent}
 	 * labeled alternative in {@link floatExpParser#exp}.

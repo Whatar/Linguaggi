@@ -10,26 +10,6 @@ public class floatExp extends floatExpBaseVisitor<Float>{
     }
 
     @Override
-    public Float visitExpression(floatExpParser.ExpressionContext ctx) {
-        switch (ctx.op. getType ()){
-            case floatExpParser.PLUS:
-                return visit(ctx.exp(0)) + visit(ctx.exp(1));
-            case floatExpParser.MINUS:
-                return visit(ctx.exp(0)) - visit(ctx.exp(1));
-            case floatExpParser.TIMES:
-                return visit(ctx.exp(0)) * visit(ctx.exp(1));
-            case floatExpParser.DIV:
-                return visit(ctx.exp(0)) / visit(ctx.exp(1));
-            case floatExpParser.MOD:
-                return visit(ctx.exp(0)) % visit(ctx.exp(1));
-            case floatExpParser.EXPONENT:
-                return (float) Math.pow(visit(ctx.exp(0)), visit(ctx.exp(1)));
-            default:
-                return 0f;
-        }
-    }
-
-    @Override
     public Float visitProg(floatExpParser.ProgContext ctx) {
         visit(ctx.init());
         return visit(ctx.exp());
@@ -66,13 +46,43 @@ public class floatExp extends floatExpBaseVisitor<Float>{
     }
 
     @Override
-    public Float visitMinus(floatExpParser.MinusContext ctx) {
+    public Float visitBplus(floatExpParser.BplusContext ctx) {
+        return visit(ctx.exp(0)) + visit(ctx.exp(1));
+    }
+
+    @Override
+    public Float visitBminus(floatExpParser.BminusContext ctx) {
+        return visit(ctx.exp(0)) - visit(ctx.exp(1));
+    }
+
+    @Override
+    public Float visitBmul(floatExpParser.BmulContext ctx) {
         return visit(ctx.exp(0)) * visit(ctx.exp(1));
     }
 
     @Override
-    public Float visitMul(floatExpParser.MulContext ctx) {
+    public Float visitBdiv(floatExpParser.BdivContext ctx) {
+        return visit(ctx.exp(0)) / visit(ctx.exp(1));
+    }
+
+    @Override
+    public Float visitBmod(floatExpParser.BmodContext ctx) {
+        return visit(ctx.exp(0)) % visit(ctx.exp(1));
+    }
+
+    @Override
+    public Float visitBexponent(floatExpParser.BexponentContext ctx) {
+        return (float) Math.pow(visit(ctx.exp(0)), visit(ctx.exp(1)));
+    }
+
+    @Override
+    public Float visitMinus(floatExpParser.MinusContext ctx) {
         return visit(ctx.exp(0)) - visit(ctx.exp(1));
+    }
+
+    @Override
+    public Float visitMul(floatExpParser.MulContext ctx) {
+        return visit(ctx.exp(0)) * visit(ctx.exp(1));
     }
 
     @Override
