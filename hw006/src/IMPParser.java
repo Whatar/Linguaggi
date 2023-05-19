@@ -487,24 +487,6 @@ public class IMPParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class QrExpContext extends ExpContext {
-		public Token op;
-		public List<ExpContext> exp() {
-			return getRuleContexts(ExpContext.class);
-		}
-		public ExpContext exp(int i) {
-			return getRuleContext(ExpContext.class,i);
-		}
-		public TerminalNode EQQ() { return getToken(IMPParser.EQQ, 0); }
-		public TerminalNode NEQ() { return getToken(IMPParser.NEQ, 0); }
-		public QrExpContext(ExpContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof IMPVisitor ) return ((IMPVisitor<? extends T>)visitor).visitQrExp(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class NotContext extends ExpContext {
 		public TerminalNode NOT() { return getToken(IMPParser.NOT, 0); }
 		public ExpContext exp() {
@@ -532,6 +514,24 @@ public class IMPParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof IMPVisitor ) return ((IMPVisitor<? extends T>)visitor).visitPlusMinus(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class EqExpContext extends ExpContext {
+		public Token op;
+		public List<ExpContext> exp() {
+			return getRuleContexts(ExpContext.class);
+		}
+		public ExpContext exp(int i) {
+			return getRuleContext(ExpContext.class,i);
+		}
+		public TerminalNode EQQ() { return getToken(IMPParser.EQQ, 0); }
+		public TerminalNode NEQ() { return getToken(IMPParser.NEQ, 0); }
+		public EqExpContext(ExpContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof IMPVisitor ) return ((IMPVisitor<? extends T>)visitor).visitEqExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -766,15 +766,15 @@ public class IMPParser extends Parser {
 						break;
 					case 4:
 						{
-						_localctx = new QrExpContext(new ExpContext(_parentctx, _parentState));
+						_localctx = new EqExpContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
 						setState(76);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
 						setState(77);
-						((QrExpContext)_localctx).op = _input.LT(1);
+						((EqExpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==EQQ || _la==NEQ) ) {
-							((QrExpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+							((EqExpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;

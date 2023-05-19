@@ -19,7 +19,8 @@ public class Main {
 
         ParseTree tree = parser.main();
 
-        IMP interpreter = new IMP();
-        System.out.println(interpreter.visit(tree));
+        Conf conf = new Conf();
+        IMP interpreter = new IMP(conf);
+        interpreter.visit(tree);
     }
 }

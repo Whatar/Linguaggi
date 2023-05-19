@@ -78,13 +78,6 @@ public interface IMPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMulDivMod(IMPParser.MulDivModContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code qrExp}
-	 * labeled alternative in {@link IMPParser#exp}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitQrExp(IMPParser.QrExpContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code not}
 	 * labeled alternative in {@link IMPParser#exp}.
 	 * @param ctx the parse tree
@@ -98,6 +91,13 @@ public interface IMPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPlusMinus(IMPParser.PlusMinusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code eqExp}
+	 * labeled alternative in {@link IMPParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqExp(IMPParser.EqExpContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code bool}
 	 * labeled alternative in {@link IMPParser#exp}.

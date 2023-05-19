@@ -87,13 +87,6 @@ public class IMPBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements IM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitQrExp(IMPParser.QrExpContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitNot(IMPParser.NotContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -102,6 +95,13 @@ public class IMPBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements IM
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPlusMinus(IMPParser.PlusMinusContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitEqExp(IMPParser.EqExpContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

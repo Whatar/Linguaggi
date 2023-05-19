@@ -19,7 +19,7 @@ exp : NAT                             # nat
     | <assoc=right> exp POW exp         # pow
     | exp op=(TIMES | DIV | MOD) exp    # mulDivMod
     | exp op=(PLUS | MINUS) exp         # plusMinus
-    | exp op=(EQQ | NEQ) exp            # qrExp
+    | exp op=(EQQ | NEQ) exp            # eqExp
     | exp op=(LT | LEQ | GEQ | GT) exp  # cmpExp
     | exp op=(AND | OR) exp             # logicExp
     | LPAR exp RPAR                     # parExp

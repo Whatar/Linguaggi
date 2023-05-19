@@ -1,7 +1,7 @@
 package value;
 
 public class BoolValue extends ExpValue<Boolean>{
-    BoolValue (Boolean value){
+    public BoolValue(Boolean value){
         super(value);
     }
 }
