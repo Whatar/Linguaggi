@@ -11,8 +11,9 @@ public class ex2 extends ex2BaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitEnd(ex2Parser.EndContext ctx) {
-        return null; // this is the last statement in the program we are interpreting
+    public Integer visitLast(ex2Parser.LastContext ctx) {
+        System.out.println(visit(ctx.exp()));
+        return null;
     }
 
     @Override
@@ -43,6 +44,8 @@ public class ex2 extends ex2BaseVisitor<Integer>{
     @Override
     public Integer visitIdentifier(ex2Parser.IdentifierContext ctx) {
         // returns the value of the identifier in memory
+        // if null, the identifier was not initialized, therefore we initialize it with 0
+        getMemory().putIfAbsent(ctx.ID().getText(), 0);
         return getMemory().get(ctx.ID().getText());
     }
 
@@ -60,6 +63,14 @@ public class ex2 extends ex2BaseVisitor<Integer>{
         int right = visit(ctx.exp(1));
 
         return left * right;
+    }
+
+    @Override
+    public Integer visitDiv(ex2Parser.DivContext ctx) {
+        int left = visit(ctx.exp(0));
+        int right = visit(ctx.exp(1));
+
+        return left / right;
     }
 
     @Override

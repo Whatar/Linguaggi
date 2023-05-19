@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from C:/Users/leona/Documents/Github/Linguaggi/hw03/src\ex2.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class ex2Parser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.12.0", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -74,7 +74,7 @@ public class ex2Parser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "java-escape"; }
+	public String getGrammarFileName() { return "ex2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -158,6 +158,18 @@ public class ex2Parser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class LastContext extends StartContext {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public LastContext(StartContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ex2Visitor ) return ((ex2Visitor<? extends T>)visitor).visitLast(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class InitializationContext extends StartContext {
 		public InitContext init() {
 			return getRuleContext(InitContext.class,0);
@@ -172,15 +184,6 @@ public class ex2Parser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class EndContext extends StartContext {
-		public EndContext(StartContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ex2Visitor ) return ((ex2Visitor<? extends T>)visitor).visitEnd(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 
 	public final StartContext start() throws RecognitionException {
 		StartContext _localctx = new StartContext(_ctx, getState());
@@ -190,33 +193,35 @@ public class ex2Parser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
-				_localctx = new EndContext(_localctx);
+				_localctx = new InitializationContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
+				setState(11);
+				init();
+				setState(12);
+				match(T__0);
+				setState(13);
+				start();
 				}
 				break;
 			case 2:
-				_localctx = new InitializationContext(_localctx);
+				_localctx = new ExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(12);
-				init();
-				setState(13);
+				setState(15);
+				exp();
+				setState(16);
 				match(T__0);
-				setState(14);
+				setState(17);
 				start();
 				}
 				break;
 			case 3:
-				_localctx = new ExpressionContext(_localctx);
+				_localctx = new LastContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(16);
+				setState(19);
 				exp();
-				setState(17);
-				match(T__0);
-				setState(18);
-				start();
 				}
 				break;
 			}
@@ -287,6 +292,24 @@ public class ex2Parser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class DivContext extends ExpContext {
+		public TerminalNode LPAR() { return getToken(ex2Parser.LPAR, 0); }
+		public List<ExpContext> exp() {
+			return getRuleContexts(ExpContext.class);
+		}
+		public ExpContext exp(int i) {
+			return getRuleContext(ExpContext.class,i);
+		}
+		public TerminalNode DIV() { return getToken(ex2Parser.DIV, 0); }
+		public TerminalNode RPAR() { return getToken(ex2Parser.RPAR, 0); }
+		public DivContext(ExpContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ex2Visitor ) return ((ex2Visitor<? extends T>)visitor).visitDiv(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class IdentifierContext extends ExpContext {
 		public TerminalNode ID() { return getToken(ex2Parser.ID, 0); }
 		public IdentifierContext(ExpContext ctx) { copyFrom(ctx); }
@@ -343,7 +366,6 @@ public class ex2Parser extends Parser {
 		}
 		public TerminalNode MUL() { return getToken(ex2Parser.MUL, 0); }
 		public TerminalNode RPAR() { return getToken(ex2Parser.RPAR, 0); }
-		public TerminalNode DIV() { return getToken(ex2Parser.DIV, 0); }
 		public MulContext(ExpContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -452,7 +474,7 @@ public class ex2Parser extends Parser {
 				}
 				break;
 			case 6:
-				_localctx = new MulContext(_localctx);
+				_localctx = new DivContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(46);
@@ -511,12 +533,12 @@ public class ex2Parser extends Parser {
 		"\u0000\u0000@\u0000\b\u0001\u0000\u0000\u0000\u0002\u0014\u0001\u0000"+
 		"\u0000\u0000\u0004\u0016\u0001\u0000\u0000\u0000\u0006:\u0001\u0000\u0000"+
 		"\u0000\b\t\u0003\u0002\u0001\u0000\t\n\u0005\u0000\u0000\u0001\n\u0001"+
-		"\u0001\u0000\u0000\u0000\u000b\u0015\u0001\u0000\u0000\u0000\f\r\u0003"+
-		"\u0004\u0002\u0000\r\u000e\u0005\u0001\u0000\u0000\u000e\u000f\u0003\u0002"+
-		"\u0001\u0000\u000f\u0015\u0001\u0000\u0000\u0000\u0010\u0011\u0003\u0006"+
-		"\u0003\u0000\u0011\u0012\u0005\u0001\u0000\u0000\u0012\u0013\u0003\u0002"+
-		"\u0001\u0000\u0013\u0015\u0001\u0000\u0000\u0000\u0014\u000b\u0001\u0000"+
-		"\u0000\u0000\u0014\f\u0001\u0000\u0000\u0000\u0014\u0010\u0001\u0000\u0000"+
+		"\u0001\u0000\u0000\u0000\u000b\f\u0003\u0004\u0002\u0000\f\r\u0005\u0001"+
+		"\u0000\u0000\r\u000e\u0003\u0002\u0001\u0000\u000e\u0015\u0001\u0000\u0000"+
+		"\u0000\u000f\u0010\u0003\u0006\u0003\u0000\u0010\u0011\u0005\u0001\u0000"+
+		"\u0000\u0011\u0012\u0003\u0002\u0001\u0000\u0012\u0015\u0001\u0000\u0000"+
+		"\u0000\u0013\u0015\u0003\u0006\u0003\u0000\u0014\u000b\u0001\u0000\u0000"+
+		"\u0000\u0014\u000f\u0001\u0000\u0000\u0000\u0014\u0013\u0001\u0000\u0000"+
 		"\u0000\u0015\u0003\u0001\u0000\u0000\u0000\u0016\u0017\u0005\r\u0000\u0000"+
 		"\u0017\u0018\u0005\u0002\u0000\u0000\u0018\u0019\u0003\u0006\u0003\u0000"+
 		"\u0019\u0005\u0001\u0000\u0000\u0000\u001a;\u0005\n\u0000\u0000\u001b"+

@@ -17,22 +17,19 @@ public class Main {
 
         System.out.println("About to create the lexer and parser");
         // Creating the lexer
-        ex2Lexer lexer = new ex2Lexer(cs);
+        floatExpLexer lexer = new floatExpLexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        ex2Parser parser = new ex2Parser(tokens);
+        floatExpParser parser = new floatExpParser(tokens);
 
         // Creating the parser
         ParseTree tree = parser.main();
 
         // Creating the interpreter
-        ex2 interpreter = new ex2();
+        floatExp interpreter = new floatExp();
 
         System.out.println("About to run the interpreter");
 
         // Running the interpreter
-        interpreter.visit(tree);
-
-        // Printing the memory
-        System.out.println("Mem: " + interpreter.getMemory());
+        System.out.println("Result: " + interpreter.visit(tree));
     }
 }

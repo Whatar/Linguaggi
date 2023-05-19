@@ -2,8 +2,9 @@ grammar ex2;
 
 main: start EOF;
 
-start: # end | init ';' start # initialization
-    | exp ';' start # expression;
+start: init ';' start # initialization
+| exp ';' start # expression
+| exp # last;
 
 init: ID '=' exp;
 exp : INTEGER # integer
@@ -11,7 +12,7 @@ exp : INTEGER # integer
     | LPAR exp PLUS exp RPAR # plus
     | LPAR exp MUL exp RPAR # mul
     | LPAR exp MINUS exp RPAR # minus
-    | LPAR exp DIV exp RPAR # mul
+    | LPAR exp DIV exp RPAR # div
     | LPAR exp MOD exp RPAR # mod;
 
 LPAR : '(';
