@@ -22,6 +22,13 @@ public interface IMPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProg(IMPParser.ProgContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code arrayAssign}
+	 * labeled alternative in {@link IMPParser#com}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayAssign(IMPParser.ArrayAssignContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code skip}
 	 * labeled alternative in {@link IMPParser#com}.
 	 * @param ctx the parse tree
@@ -85,6 +92,13 @@ public interface IMPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNot(IMPParser.NotContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code arrayElem}
+	 * labeled alternative in {@link IMPParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayElem(IMPParser.ArrayElemContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code plusMinus}
 	 * labeled alternative in {@link IMPParser#exp}.
 	 * @param ctx the parse tree
@@ -140,4 +154,10 @@ public interface IMPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitId(IMPParser.IdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link IMPParser#str}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStr(IMPParser.StrContext ctx);
 }

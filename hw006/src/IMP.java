@@ -42,7 +42,7 @@ public class IMP extends IMPBaseVisitor<Value> {
     }
 
     public ComValue visitAssign(IMPParser.AssignContext ctx) {
-        conf.update(ctx.ID().getText(), visitExp(ctx.exp()));
+        conf.updateMem(ctx.ID().getText(), visitExp(ctx.exp()));
         return ComValue.INSTANCE;
     }
 
@@ -59,6 +59,23 @@ public class IMP extends IMPBaseVisitor<Value> {
 
 
     @Override
+    public StrValue visitStr(IMPParser.StrContext ctx) {
+        if (ctx.STRING() != null){
+        return new StrValue(ctx.STRING().getText());} // return the string
+        else{
+            return new StrValue(visitToString(ctx.exp())); // convert to string and return it
+        }
+    }
+
+    private String visitToString(IMPParser.ExpContext ctx) {
+        try{
+            return (visitExp(ctx)).getValue().toString(); // get the value, convert to string, and return it
+        } catch (ClassCastException e) {
+            return conf.getStringArray(ctx.getText());
+        }
+        }
+
+    @Override
     public NatValue visitNat(IMPParser.NatContext ctx) {
         return new NatValue(Integer.parseInt(ctx.NAT().getText()));
     }
@@ -70,6 +87,19 @@ public class IMP extends IMPBaseVisitor<Value> {
         return switch (ctx.op.getType()) {
             case IMPParser.EQQ -> new BoolValue(left.equals(right));
             case IMPParser.NEQ -> new BoolValue(!left.equals(right));
+            default -> null; // unreachable case
+        };
+    }
+
+    public BoolValue visitCmpExp(IMPParser.CmpExpContext ctx) {
+        ExpValue<?> left = visitExp(ctx.exp(0));
+        ExpValue<?> right = visitExp(ctx.exp(1));
+
+        return switch (ctx.op.getType()) {
+            case IMPParser.LT -> new BoolValue(left.op(right, "<") > 0);
+            case IMPParser.GT -> new BoolValue(left.op(right, ">") > 0);
+            case IMPParser.LEQ -> new BoolValue(left.op(right, "<=") > 0);
+            case IMPParser.GEQ -> new BoolValue(left.op(right, ">=") > 0);
             default -> null; // unreachable case
         };
     }
@@ -90,11 +120,31 @@ public class IMP extends IMPBaseVisitor<Value> {
         if(conf.getMem().containsKey(id)){
             return conf.getMem().get(id);
         }
-        else{
-            System.err.println("Variable " + id + " not found");
-            System.exit(1);
+        else if(conf.getArrays().containsKey(id)){
+            return new StrValue(conf.getStringArray(id));
         }
-        return null; // unreachable statement
+        else{
+            System.err.println("Variable not found " + id);
+            System.err.println("@ " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            System.exit(1);
+            return null;
+        }
+    }
+
+
+
+    @Override
+    public ExpValue<?> visitArrayElem(IMPParser.ArrayElemContext ctx) {
+        String id = ctx.ID().getText();
+        int index = ((NatValue) visitExp(ctx.exp())).getValue();
+
+        if(conf.getArrays().containsKey(id)){
+            return conf.getArrays().get(id).get(index);
+        } else{
+            System.err.println("Array not found");
+            System.exit(1);
+            return null;
+        }
     }
 
     @Override
@@ -119,7 +169,19 @@ public class IMP extends IMPBaseVisitor<Value> {
 
     @Override
     public Value visitOut(IMPParser.OutContext ctx) {
-        System.out.println(visitExp(ctx.exp()).getValue());
+        for (IMPParser.StrContext str : ctx.str()) {
+                System.out.print(visitStr(str).getValue().replace("\"", ""));
+        }
         return null;
+    }
+
+    @Override
+    public Value visitArrayAssign(IMPParser.ArrayAssignContext ctx) {
+        String id = ctx.ID().getText();
+        int index = ((NatValue) visitExp(ctx.exp(0))).getValue();
+        ExpValue<?> value = visitExp(ctx.exp(1));
+
+        conf.updateArray(id, index, value);
+        return value;
     }
 }
