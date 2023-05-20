@@ -2,7 +2,7 @@ import value.ExpValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-        import java.util.Map;
+import java.util.Map;
 
 public class Conf {
     private final Map<String, ExpValue<?>> mem = new HashMap<>();
@@ -12,7 +12,6 @@ public class Conf {
         return mem;
     }
 
-    // we need a structure to store arrays and their values
     public Map<String, ArrayList<ExpValue<?>>> getArrays() {
         return arrays;
     }
@@ -39,7 +38,6 @@ public class Conf {
 
         targetArray.set(index, value);
 
-        // Assign "0" to the element at index 5
         arrays.put(id, targetArray);
 
         return true;
@@ -47,16 +45,16 @@ public class Conf {
 
     public String getStringArray(String id) {
         String result = "";
-            ArrayList<ExpValue<?>> targetArray = arrays.get(id);
-            for (ExpValue<?> value : targetArray) {
-                if (value == null) {
-                    continue;
-                }
-                result += value.getValue();
-                if (value != targetArray.get(targetArray.size() - 1)) {
-                    result += ", ";
-                }
+        ArrayList<ExpValue<?>> targetArray = arrays.get(id);
+        for (ExpValue<?> value : targetArray) {
+            if (value == null) {
+                continue;
             }
+            result += value.getValue();
+            if (value != targetArray.get(targetArray.size() - 1)) {
+                result += ", ";
+            }
+        }
         return result;
     }
 }

@@ -61,7 +61,7 @@ public class IMP extends IMPBaseVisitor<Value> {
     @Override
     public StrValue visitStr(IMPParser.StrContext ctx) {
         if (ctx.STRING() != null){
-        return new StrValue(ctx.STRING().getText());} // return the string
+            return new StrValue(ctx.STRING().getText());} // return the string
         else{
             return new StrValue(visitToString(ctx.exp())); // convert to string and return it
         }
@@ -73,7 +73,7 @@ public class IMP extends IMPBaseVisitor<Value> {
         } catch (ClassCastException e) {
             return conf.getStringArray(ctx.getText());
         }
-        }
+    }
 
     @Override
     public NatValue visitNat(IMPParser.NatContext ctx) {
@@ -142,6 +142,7 @@ public class IMP extends IMPBaseVisitor<Value> {
             return conf.getArrays().get(id).get(index);
         } else{
             System.err.println("Array not found");
+            System.err.println("@ " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
             System.exit(1);
             return null;
         }
@@ -170,7 +171,7 @@ public class IMP extends IMPBaseVisitor<Value> {
     @Override
     public Value visitOut(IMPParser.OutContext ctx) {
         for (IMPParser.StrContext str : ctx.str()) {
-                System.out.print(visitStr(str).getValue().replace("\"", ""));
+            System.out.print(visitStr(str).getValue().replace("\"", ""));
         }
         return null;
     }
