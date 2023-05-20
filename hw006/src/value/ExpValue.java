@@ -13,7 +13,6 @@ public abstract class ExpValue<T> extends Value {
     }
 
     public int op(ExpValue<?> other, String op){
-        // convert following line to integer
         Double a = ((Math.pow((Integer) value, (Integer) other.getValue())));
         Integer b = a.intValue();
         return switch (op) {
