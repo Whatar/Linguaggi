@@ -1,6 +1,12 @@
 grammar Imp;
 
-prog : com EOF ;
+prog : funs com EOF ;
+
+funs: | fun funs;
+
+fun: INITFUN ID LPAR vars RPAR LBRACE com SEMICOLON RETURN exp RBRACE;
+
+vars: ID | ID COMMA ID |;
 
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign
@@ -9,6 +15,8 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
     | OUT LPAR exp RPAR                                                 # out
     ;
+
+args: exp | exp COMMA args |;
 
 exp : NAT                                 # nat
     | BOOL                                # bool
@@ -21,7 +29,11 @@ exp : NAT                                 # nat
     | exp op=(EQQ | NEQ) exp              # eqExp
     | exp op=(AND | OR) exp               # logicExp
     | ID                                  # id
+    | ID LPAR args RPAR                   # funCall
     ;
+
+INITFUN: 'fun';
+RETURN: 'return';
 
 NAT : '0' | [1-9][0-9]* ;
 BOOL : 'true' | 'false' ;
@@ -58,6 +70,6 @@ LBRACE    : '{' ;
 RBRACE    : '}' ;
 SEMICOLON : ';' ;
 
-ID : [a-z]+ ;
+ID : [A-Za-z]+ ;
 
 WS : [ \t\r\n]+ -> skip ;
