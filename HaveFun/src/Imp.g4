@@ -10,6 +10,8 @@ vars: ID | ID COMMA ID |;
 
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign
+    | GLOBAL ID ASSIGN exp                                              # newGlobalAssign
+    | ID GL ASSIGN exp                                                  # globalAssign
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
@@ -29,11 +31,16 @@ exp : NAT                                 # nat
     | exp op=(EQQ | NEQ) exp              # eqExp
     | exp op=(AND | OR) exp               # logicExp
     | ID                                  # id
+    | ID GL                               # globalId
     | ID LPAR args RPAR                   # funCall
     ;
 
 INITFUN: 'fun';
 RETURN: 'return';
+
+GLOBAL: 'global';
+
+GL: '.g';
 
 NAT : '0' | [1-9][0-9]* ;
 BOOL : 'true' | 'false' ;
