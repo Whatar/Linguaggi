@@ -77,8 +77,8 @@ LBRACE    : '{' ;
 RBRACE    : '}' ;
 SEMICOLON : ';' ;
 
-A_INIT : '${' ;
-A_END  : '}$' ;
+ARNC_INIT : '${' ;
+ARNC_END  : '}$' ;
 
 ID : [A-Za-z]+ ;
 
