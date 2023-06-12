@@ -1,5 +1,8 @@
 import value.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class IntImp extends ImpBaseVisitor<Value> {
 
     private final Conf conf;
@@ -50,6 +53,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public ComValue visitProg(ImpParser.ProgContext ctx) {
+        for (int i = 0 ; i < ctx.fun().size() ; i++) {
+            visitFun(ctx.fun(i));
+        }
         return visitCom(ctx.com());
     }
 
@@ -201,4 +207,72 @@ public class IntImp extends ImpBaseVisitor<Value> {
             default -> null;
         };
     }
+
+    // we save the function context in the conf, so we can use it later
+    @Override
+    public ExpValue<?> visitFun(ImpParser.FunContext ctx) {
+        Map<String, ExpValue<?>> args = new HashMap<>();
+
+        for (int i = 0; i < ctx.vars().getChildCount(); i++) {
+            String id = ctx.vars().getChild(i).getText();
+
+            if (!conf.contains(id)) {
+                args.put(id, new NatValue(0));
+            }
+            else {
+                System.err.println("Parameter name " + id + " clashes with previous parameters");
+                System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            }
+        }
+
+        Conf.FunctionContext functionContext = new Conf.FunctionContext(ctx, args);
+
+        if(conf.containsFunction(ctx.ID().getText())){
+            System.err.println("Fun " + ctx.ID().getText() + " already defined");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
+            System.exit(1);
+        }
+
+        conf.updateFunction(ctx.ID().getText(), functionContext);
+
+        return new NatValue(0);
+    }
+
+    @Override
+    public ExpValue<?> visitFunCall(ImpParser.FunCallContext ctx) {
+        String id = ctx.ID().getText();
+
+        // check if the function was declared
+        if (!conf.containsFunction(id)) {
+            System.err.println("Function " + id + " used but never declared");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
+            System.exit(1);
+        }
+
+        Conf.FunctionContext functionContext = conf.getFunction(id);
+
+        Map<String, ExpValue<?>> args = functionContext.getArgs();
+
+        // check if the number of arguments is correct
+        if (args.size() != ctx.exp().size()) {
+            System.err.println("Function " + id + " called with the wrong number of arguments");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
+            System.exit(1);
+        }
+
+        // evaluate the arguments
+        for (int i = 0; i < ctx.exp().size(); i++) {
+            String argId = functionContext.getArgs().keySet().toArray()[i].toString();
+            functionContext.getArgs().put(argId, visitExp(ctx.exp(i)));
+        }
+
+        visitCom(functionContext.getCtx().com());
+        return visitExp(functionContext.getCtx().exp());
+    }
+
+
+
 }
