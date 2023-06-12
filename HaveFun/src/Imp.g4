@@ -34,8 +34,6 @@ exp : NAT                                 # nat
 
 arn : ARNC_SHOWTIME  ARNC_TERM;             //TODO: inserire stat
 
-stat :
-
 INITFUN: 'fun';
 RETURN: 'return';
 
