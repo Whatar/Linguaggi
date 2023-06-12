@@ -36,7 +36,7 @@ exp : NAT                                 # nat
     | ID LPAR args RPAR                   # funCall
     ;
 
-arn : ARNC_SHOWTIME stat ARNC_TERM;
+arn : ARNC_SHOWTIME  ARNC_TERM;             //TODO: inserire stat
 
 stat :
 
