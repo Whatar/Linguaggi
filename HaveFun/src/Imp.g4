@@ -13,7 +13,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
-    | ARNC_INIT arnc ARNC_END com                                       # arnoldC
+    | ARNC_INIT arnc ARNC_END SEMICOLON com                                       # arnoldC
     | OUT LPAR exp RPAR                                                 # out
     ;
 
@@ -70,6 +70,8 @@ arnc_op : ARNC_PLUS arnc_exp                            # arnc_plus
         | ARNC_AND arnc_exp                             # arnc_and
         ;
 //TODO : decidere se operazioni e logic op vanno separate
+
+//TODO : implementare @NO PROBLEMO e @I LIED come valori costanti
 
 INITFUN: 'fun';
 RETURN: 'return';
