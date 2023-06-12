@@ -16,12 +16,6 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProg(ImpParser.ProgContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ImpParser#funs}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuns(ImpParser.FunsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link ImpParser#fun}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -89,12 +83,6 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitOut(ImpParser.OutContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ImpParser#args}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArgs(ImpParser.ArgsContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code nat}
 	 * labeled alternative in {@link ImpParser#exp}.

@@ -19,8 +19,8 @@ public class ImpLexer extends Lexer {
 		INITFUN=1, RETURN=2, GLOBAL=3, GL=4, NAT=5, BOOL=6, PLUS=7, MINUS=8, MUL=9, 
 		DIV=10, MOD=11, POW=12, AND=13, OR=14, EQQ=15, NEQ=16, LEQ=17, GEQ=18, 
 		LT=19, GT=20, NOT=21, IF=22, THEN=23, ELSE=24, WHILE=25, SKIPP=26, ASSIGN=27, 
-		OUT=28, LPAR=29, RPAR=30, LBRACE=31, RBRACE=32, SEMICOLON=33, A_INIT=34, 
-		A_END=35, ID=36, WS=37;
+		OUT=28, LPAR=29, RPAR=30, LBRACE=31, RBRACE=32, SEMICOLON=33, ARNC_INIT=34, 
+		ARNC_END=35, ID=36, WS=37;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -34,8 +34,8 @@ public class ImpLexer extends Lexer {
 			"INITFUN", "RETURN", "GLOBAL", "GL", "NAT", "BOOL", "PLUS", "MINUS", 
 			"MUL", "DIV", "MOD", "POW", "AND", "OR", "EQQ", "NEQ", "LEQ", "GEQ", 
 			"LT", "GT", "NOT", "IF", "THEN", "ELSE", "WHILE", "SKIPP", "ASSIGN", 
-			"OUT", "LPAR", "RPAR", "LBRACE", "RBRACE", "SEMICOLON", "A_INIT", "A_END", 
-			"ID", "WS"
+			"OUT", "LPAR", "RPAR", "LBRACE", "RBRACE", "SEMICOLON", "ARNC_INIT", 
+			"ARNC_END", "ID", "WS"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -54,8 +54,8 @@ public class ImpLexer extends Lexer {
 			null, "INITFUN", "RETURN", "GLOBAL", "GL", "NAT", "BOOL", "PLUS", "MINUS", 
 			"MUL", "DIV", "MOD", "POW", "AND", "OR", "EQQ", "NEQ", "LEQ", "GEQ", 
 			"LT", "GT", "NOT", "IF", "THEN", "ELSE", "WHILE", "SKIPP", "ASSIGN", 
-			"OUT", "LPAR", "RPAR", "LBRACE", "RBRACE", "SEMICOLON", "A_INIT", "A_END", 
-			"ID", "WS"
+			"OUT", "LPAR", "RPAR", "LBRACE", "RBRACE", "SEMICOLON", "ARNC_INIT", 
+			"ARNC_END", "ID", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
