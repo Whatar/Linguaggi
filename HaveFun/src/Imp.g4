@@ -77,6 +77,9 @@ LBRACE    : '{' ;
 RBRACE    : '}' ;
 SEMICOLON : ';' ;
 
+A_INIT : '${' ;
+A_END  : '}$' ;
+
 ID : [A-Za-z]+ ;
 
 WS : [ \t\r\n]+ -> skip ;
