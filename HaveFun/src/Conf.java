@@ -23,6 +23,14 @@ public class Conf {
         public ImpParser.FunContext getCtx() {
             return ctx;
         }
+
+        public boolean contains(String id) {
+            return args.containsKey(id);
+        }
+
+        public ExpValue<?> get(String id) {
+            return args.get(id);
+        }
     }
 
     private final Map<String, ExpValue<?>> map = new HashMap<>();

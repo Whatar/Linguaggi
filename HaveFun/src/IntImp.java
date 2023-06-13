@@ -1,13 +1,12 @@
 import value.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class IntImp extends ImpBaseVisitor<Value> {
 
     private final Conf conf;
 
-    private String context = "";
+    private LinkedList<String> openContexts = new LinkedList<>();
 
     public IntImp(Conf conf) {
         this.conf = conf;
@@ -73,7 +72,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
         String id = ctx.ID().getText();
         ExpValue<?> v = visitExp(ctx.exp());
 
-        conf.update(id, v);
+        Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());
+        currentContext.put(id, v);
+        conf.updateContext(openContexts.getLast(), currentContext);
 
         return ComValue.INSTANCE;
     }
@@ -174,14 +175,28 @@ public class IntImp extends ImpBaseVisitor<Value> {
     public ExpValue<?> visitId(ImpParser.IdContext ctx) {
         String id = ctx.ID().getText();
 
-        if (!conf.contains(id)) {
-            System.err.println("Variable " + id + " used but never instantiated");
-            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+        ExpValue ret;
+        if (openContexts.size() > 0){
+            Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
+            if (!funC.containsKey(id)) {
+                System.err.println("context: " + conf.getContext(openContexts.getLast()));
+                System.err.println("Variable " + id + " used but never instantiated");
+                System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 
-            System.exit(1);
+                System.exit(1);
+            }
+            ret = funC.get(id);
         }
+        else{
+            if (!conf.contains(id)) {
+                System.err.println("Variable " + id + " used but never instantiated");
+                System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 
-        return conf.get(id);
+                System.exit(1);
+            }
+            ret = conf.get(id);
+        }
+        return ret;
     }
 
     @Override
@@ -268,13 +283,34 @@ public class IntImp extends ImpBaseVisitor<Value> {
         // evaluate the arguments
         for (int i = 0; i < ctx.exp().size(); i++) {
             String argId = functionContext.getArgs().keySet().toArray()[i].toString();
-            functionContext.getArgs().put(argId, visitExp(ctx.exp(i)));
+            ExpValue<?> argValue = visitExp(ctx.exp(i));
+            args.put(argId, argValue);
         }
 
-        context = ctx.ID().getText();
+        if (openContexts.contains(id)) {
+            // let's loop through the context to find the last name of the function, and add _rec to it
+            String newId = id;
+            for (int i = 0; i < openContexts.size(); i++) {
+                String current_context = openContexts.get(i);
+                if (current_context.contains("!")) {
+                    if (current_context.split("!")[0].equals(id)) {
+                        newId = current_context;
+                    }
+                }
+            }
+            openContexts.addLast(newId + "!");
+        }
+        else {
+            openContexts.addLast(id); // push the function name to the context
+        }
+
+        conf.updateContext(openContexts.getLast(), args); // update the context with the arguments
 
         visitCom(functionContext.getCtx().com());
-        return visitExp(functionContext.getCtx().exp());
+
+        ExpValue ret = visitExp(functionContext.getCtx().exp());
+        openContexts.pollLast();
+        return ret;
     }
 
 
