@@ -7,6 +7,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     private final Conf conf;
 
+    private String context = "";
+
     public IntImp(Conf conf) {
         this.conf = conf;
     }
@@ -268,6 +270,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
             String argId = functionContext.getArgs().keySet().toArray()[i].toString();
             functionContext.getArgs().put(argId, visitExp(ctx.exp(i)));
         }
+
+        context = ctx.ID().getText();
 
         visitCom(functionContext.getCtx().com());
         return visitExp(functionContext.getCtx().exp());

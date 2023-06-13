@@ -150,7 +150,7 @@ ARNC_WHEND : 'CHILL';                               //WHILE END
 ARNC_VALZERO : '@I LIED';
 ARNC_VALONE : '@NO PROBLEMO';
 
-ID : [A-Za-z]+ ;
+ID : [A-Za-z]+[A-Za-z0-9]* ;
 //TODO : nomi variabili con cifre
 
 WS : [ \t\r\n]+ -> skip ;
