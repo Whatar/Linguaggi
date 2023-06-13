@@ -13,7 +13,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
-    | ARNC_INIT arnc ARNC_END SEMICOLON com                                       # arnoldC
+    | ARNC_INIT arnc ARNC_END                                           # arnoldC
     | OUT LPAR exp RPAR                                                 # out
     ;
 
@@ -44,6 +44,7 @@ stat : ARNC_PRINT arnc_exp                                                  # ar
      ;
 
 arnc_exp : NAT                                          # arnc_nat
+         | FLOAT                                        # arnc_float
          | BOOL                                         # arnc_bool
          | LPAR arnc_exp RPAR                           # arnc_parExp
          | <assoc=right> arnc_exp POW arnc_exp          # arnc_pow
@@ -81,6 +82,12 @@ GLOBAL: 'global';
 GL: '.g';
 
 NAT : '0' | [1-9][0-9]* ;
+INT    : NAT | '-' POS;
+FLOAT   : INT | (INT | '-' '0') '.' DIGIT+;
+fragment POS    : POSDIGIT DIGIT*;
+fragment DIGIT  : '0' | POSDIGIT;
+fragment POSDIGIT   : [1-9];
+
 BOOL : 'true' | 'false' ;
 
 PLUS  : '+' ;
