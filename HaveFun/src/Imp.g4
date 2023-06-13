@@ -2,7 +2,7 @@ grammar Imp;
 
 prog : fun* com EOF ;
 
-fun: INITFUN ID LPAR vars RPAR LBRACE com SEMICOLON RETURN exp RBRACE;
+fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
 vars: ID | ID COMMA ID |;
 

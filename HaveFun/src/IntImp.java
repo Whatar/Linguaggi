@@ -13,7 +13,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     private ComValue visitCom(ImpParser.ComContext ctx) {
-        return (ComValue) visit(ctx);
+        if (ctx == null)
+            return null;
+        else {
+            return (ComValue) visit(ctx);
+        }
     }
 
     private ExpValue<?> visitExp(ImpParser.ExpContext ctx) {
@@ -270,10 +274,15 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         Conf.FunctionContext functionContext = conf.getFunction(id);
 
+        // copy the arguments
         Map<String, ExpValue<?>> args = functionContext.getArgs();
+        Map<String, ExpValue<?>> argsCopy = new HashMap<>();
+        for (String key : args.keySet()) {
+            argsCopy.put(key, args.get(key));
+        }
 
         // check if the number of arguments is correct
-        if (args.size() != ctx.exp().size()) {
+        if (argsCopy.size() != ctx.exp().size()) {
             System.err.println("Function " + id + " called with the wrong number of arguments");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 
@@ -282,9 +291,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         // evaluate the arguments
         for (int i = 0; i < ctx.exp().size(); i++) {
-            String argId = functionContext.getArgs().keySet().toArray()[i].toString();
+            String argId = argsCopy.keySet().toArray()[i].toString();
             ExpValue<?> argValue = visitExp(ctx.exp(i));
-            args.put(argId, argValue);
+            argsCopy.put(argId, argValue);
         }
 
         if (openContexts.contains(id)) {
@@ -304,10 +313,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
             openContexts.addLast(id); // push the function name to the context
         }
 
-        conf.updateContext(openContexts.getLast(), args); // update the context with the arguments
+        conf.updateContext(openContexts.getLast(), argsCopy); // update the context with the arguments
 
         visitCom(functionContext.getCtx().com());
-
         ExpValue ret = visitExp(functionContext.getCtx().exp());
         openContexts.pollLast();
         return ret;

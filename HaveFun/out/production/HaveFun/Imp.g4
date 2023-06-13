@@ -2,7 +2,7 @@ grammar Imp;
 
 prog : fun* com EOF ;
 
-fun: INITFUN ID LPAR vars RPAR LBRACE com SEMICOLON RETURN exp RBRACE;
+fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
 vars: ID | ID COMMA ID |;
 
@@ -13,7 +13,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
-    | ARNC_INIT arnc ARNC_END SEMICOLON com                                       # arnoldC
+    | ARNC_INIT arnc ARNC_END                                           # arnoldC
     | OUT LPAR exp RPAR                                                 # out
     ;
 
@@ -32,20 +32,21 @@ exp : NAT                                 # nat
     | ID LPAR exp* RPAR                   # funCall
     ;
 
-arnc : ARNC_SHOWTIME ((stat)*)? ARNC_TERM;
+arnc : ARNC_SHOWTIME (stat)* ARNC_TERM;
 
 stat : ARNC_PRINT arnc_exp                                                  # arnc_print
      | ARNC_DECL ID ARNC_VARSET arnc_exp                                    # arnc_declaration
      | ARNC_DECL GLOBAL ID ARNC_VARSET arnc_exp                             # arnc_globalDeclaration
      | ARNC_ASSIGN ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END             # arnc_assign
      | ARNC_ASSIGN GL ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END          # arnc_globalAssign
-     | ARNC_IF arnc_exp ((stat)*)? ((ARNC_ELSE arnc_exp)*)? ARNC_ENDIF      # arnc_if
-     | ARNC_WHILE arnc_exp ((stat)*)? ARNC_WHEND                            # arnc_while
+     | ARNC_IF arnc_exp (stat)* ((ARNC_ELSE arnc_exp)*)? ARNC_ENDIF         # arnc_if
+     | ARNC_WHILE arnc_exp (stat)* ARNC_WHEND                               # arnc_while
      ;
-//TODO : differenza tra global e .g?
 
 arnc_exp : NAT                                          # arnc_nat
+         | FLOAT                                        # arnc_float
          | BOOL                                         # arnc_bool
+         | STRING                                       # arnc_string
          | LPAR arnc_exp RPAR                           # arnc_parExp
          | <assoc=right> arnc_exp POW arnc_exp          # arnc_pow
          | NOT arnc_exp                                 # arnc_not
@@ -57,6 +58,8 @@ arnc_exp : NAT                                          # arnc_nat
          | ID                                           # arnc_id
          | ID GL                                        # arnc_globalId
          | ID LPAR exp* RPAR                            # arnc_funCall
+         | ARNC_VALONE                                  # arnc_valzero
+         | ARNC_VALZERO                                 # arnc_valone
          ;
 //TODO : per ora ho solo copiato per testare, probabilmente va bene ma devo controllare se servono tutte le operazioni
 
@@ -69,7 +72,6 @@ arnc_op : ARNC_PLUS arnc_exp                            # arnc_plus
         | ARNC_OR arnc_exp                              # arnc_or
         | ARNC_AND arnc_exp                             # arnc_and
         ;
-//TODO : decidere se operazioni e logic op vanno separate
 
 //TODO : implementare @NO PROBLEMO e @I LIED come valori costanti
 
@@ -81,6 +83,12 @@ GLOBAL: 'global';
 GL: '.g';
 
 NAT : '0' | [1-9][0-9]* ;
+INT    : NAT | '-' POS;
+FLOAT   : INT | (INT | '-' '0') '.' DIGIT+;
+fragment POS    : POSDIGIT DIGIT*;
+fragment DIGIT  : '0' | POSDIGIT;
+fragment POSDIGIT   : [1-9];
+STRING : '"'[A-Za-z]+[A-Za-z0-9' '_]*'"';
 BOOL : 'true' | 'false' ;
 
 PLUS  : '+' ;
@@ -147,10 +155,10 @@ ARNC_WHILE : 'STICK AROUND';                        //WHILE LOOP --> STICK AROUN
                                                     //[statements]
 ARNC_WHEND : 'CHILL';                               //WHILE END
 
-ARNC_VALZERO : '@I LIED';
-ARNC_VALONE : '@NO PROBLEMO';
+ARNC_VALZERO : '@I LIED';                           //VALUE 0
+ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
 
-ID : [A-Za-z]+[A-Za-z0-9]* ;
+ID : [A-Za-z_]+[A-Za-z0-9_]* ;
 //TODO : nomi variabili con cifre
 
 WS : [ \t\r\n]+ -> skip ;

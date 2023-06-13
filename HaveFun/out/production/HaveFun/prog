@@ -1,5 +1,4 @@
 fun factorial(n) {
-  out(n);
   if (n == 0) then { ReT = 1 }
   else { ReT = factorial(n - 1) * n };
 
