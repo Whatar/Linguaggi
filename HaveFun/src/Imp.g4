@@ -46,6 +46,7 @@ stat : ARNC_PRINT arnc_exp                                                  # ar
 arnc_exp : NAT                                          # arnc_nat
          | FLOAT                                        # arnc_float
          | BOOL                                         # arnc_bool
+         | STRING                                       # arnc_string
          | LPAR arnc_exp RPAR                           # arnc_parExp
          | <assoc=right> arnc_exp POW arnc_exp          # arnc_pow
          | NOT arnc_exp                                 # arnc_not
@@ -87,7 +88,7 @@ FLOAT   : INT | (INT | '-' '0') '.' DIGIT+;
 fragment POS    : POSDIGIT DIGIT*;
 fragment DIGIT  : '0' | POSDIGIT;
 fragment POSDIGIT   : [1-9];
-
+STRING : '"'[A-Za-z]+[A-Za-z0-9' '_]*'"';
 BOOL : 'true' | 'false' ;
 
 PLUS  : '+' ;
@@ -154,10 +155,10 @@ ARNC_WHILE : 'STICK AROUND';                        //WHILE LOOP --> STICK AROUN
                                                     //[statements]
 ARNC_WHEND : 'CHILL';                               //WHILE END
 
-ARNC_VALZERO : '@I LIED';                           //
-ARNC_VALONE : '@NO PROBLEMO';                       //
+ARNC_VALZERO : '@I LIED';                           //VALUE 0
+ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
 
-ID : [A-Za-z]+[A-Za-z0-9]* ;
+ID : [A-Za-z_]+[A-Za-z0-9_]* ;
 //TODO : nomi variabili con cifre
 
 WS : [ \t\r\n]+ -> skip ;
