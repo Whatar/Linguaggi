@@ -4,7 +4,7 @@ prog : fun* com EOF ;
 
 fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
-vars: ID | ID COMMA ID |;
+vars: ID* (COMMA ID)* |;
 
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign
@@ -40,7 +40,7 @@ stat : ARNC_PRINT arnc_exp                                                  # ar
      | ARNC_DECL GLOBAL ID ARNC_VARSET arnc_exp                             # arnc_globalDeclaration
      | ARNC_ASSIGN ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END             # arnc_assign
      | ARNC_ASSIGN GL ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END          # arnc_globalAssign
-     | ARNC_IF arnc_exp stat ((ARNC_ELSE arnc_exp)*)? ARNC_ENDIF            # arnc_if
+     | ARNC_IF arnc_exp stat (ARNC_ELSE arnc_exp)* ARNC_ENDIF            # arnc_if
      | ARNC_WHILE arnc_exp (stat)* ARNC_WHEND                               # arnc_while
      ;
 
