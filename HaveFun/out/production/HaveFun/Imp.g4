@@ -15,7 +15,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
     | ARNC_INIT arnc ARNC_END                                           # arnoldC
     | OUT LPAR exp RPAR                                                 # out
-    | LBRACE com RBRACE LBRACE com RBRACE                               # nonDet
+    | LBRACE com RBRACE ND LBRACE com RBRACE                            # nonDet
     ;
 
 exp : NAT                                 # nat
@@ -40,7 +40,7 @@ stat : ARNC_PRINT arnc_exp                                                  # ar
      | ARNC_DECL GLOBAL ID ARNC_VARSET arnc_exp                             # arnc_globalDeclaration
      | ARNC_ASSIGN ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END             # arnc_assign
      | ARNC_ASSIGN GL ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END          # arnc_globalAssign
-     | ARNC_IF arnc_exp (stat)* ((ARNC_ELSE arnc_exp)*)? ARNC_ENDIF         # arnc_if
+     | ARNC_IF arnc_exp stat ((ARNC_ELSE arnc_exp)*)? ARNC_ENDIF            # arnc_if
      | ARNC_WHILE arnc_exp (stat)* ARNC_WHEND                               # arnc_while
      ;
 
@@ -82,6 +82,7 @@ RETURN: 'return';
 GLOBAL: 'global';
 
 GL: '.g';
+ND: 'nd';
 
 NAT : '0' | [1-9][0-9]* ;
 INT    : NAT | '-' POS;

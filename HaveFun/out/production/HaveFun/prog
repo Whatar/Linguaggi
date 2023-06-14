@@ -1,22 +1,7 @@
-fun f(f) {
-   out(f);
-   f = 10;
-   out(f);
-   f = 100;
-   f = g(f);
-   out(f);
-   return g(f)
+fun f(x, y) {
+  return y
 }
 
-fun g(f) {
-  g = 20;
-  out(f);
-  f = 200;
-  out(g);
-  out(f);
-  return g
-}
-
-f = 99;
-g = 42;
-{ out(f(g(f)));out(f) } nd { out(g(f(g)));out(g) }
+out(f(1, 2));
+global t = 42;
+out(f(3, 4))

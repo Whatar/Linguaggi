@@ -104,6 +104,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
         String id = ctx.ID().getText();
         ExpValue<?> v = visitExp(ctx.exp());
 
+        // if the current context is not !general, then we cannot assign to global variables
+        if (!openContexts.getLast().equals("!general")) {
+            System.err.println("Global variable assignment is not allowed in this context.");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            System.exit(1);
+        }
+
         Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
         currentContext.put(id, v);
         conf.updateContext("!global", currentContext);
@@ -217,7 +224,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
         ExpValue ret;
         Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
         if (!funC.containsKey(id)) {
-            System.err.println("context: " + conf.getContext(openContexts.getLast()));
             System.err.println("Variable " + id + " used but never instantiated");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 
@@ -233,7 +239,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
         if (!currentContext.containsKey(id)) {
-            System.err.println("context: " + conf.getContext("!global"));
             System.err.println("Variable " + id + " used but never instantiated");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
             System.exit(1);
@@ -275,6 +280,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
         Map<String, ExpValue<?>> args = new HashMap<>();
 
         for (int i = 0; i < ctx.vars().getChildCount(); i++) {
+            if (ctx.vars().getChild(i).getText().equals(","))
+                continue;
             String id = ctx.vars().getChild(i).getText();
 
             if (!conf.contains(id)) {
@@ -322,9 +329,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
         }
 
         // check if the number of arguments is correct
+        // System.out.println("args"+ argsCopy+"size"+argsCopy.size());
+        // System.out.println("exp"+ctx.exp()+"size"+ctx.exp().size());
         if (argsCopy.size() != ctx.exp().size()) {
-            System.out.println("exp"+ argsCopy);
-            System.out.println("args"+ctx.exp());
             System.err.println("Function " + id + " called with the wrong number of arguments");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 
