@@ -4,7 +4,7 @@ prog : fun* com EOF ;
 
 fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
-vars: ID | ID COMMA ID |;
+vars: ID* (COMMA ID)* |;
 
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign

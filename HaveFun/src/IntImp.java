@@ -17,8 +17,10 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     private ComValue visitCom(ImpParser.ComContext ctx) {
-        if (ctx == null)
+        if (ctx == null){
+            System.exit(1);
             return null;
+        }
         else {
             return (ComValue) visit(ctx);
         }
@@ -284,12 +286,15 @@ public class IntImp extends ImpBaseVisitor<Value> {
                 continue;
             String id = ctx.vars().getChild(i).getText();
 
-            if (!conf.contains(id)) {
+
+
+            if (!args.containsKey(id)) {
                 args.put(id, new NatValue(0));
             }
             else {
                 System.err.println("Parameter name " + id + " clashes with previous parameters");
                 System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+                System.exit(1);
             }
         }
 

@@ -1,3 +1,4 @@
+import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -17,6 +18,12 @@ public class Main {
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ImpParser parser = new ImpParser(tokenStream);
 
+
+
+        // we want the parser to bail out as soon as it encounters an error
+        BailErrorStrategy strat = new BailErrorStrategy();
+
+        parser.setErrorHandler(strat);
         ParseTree tree = parser.prog();
 
         IntImp interpreter = new IntImp(new Conf());
