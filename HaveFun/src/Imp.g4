@@ -38,8 +38,8 @@ arnc : ARNC_SHOWTIME (stat)* ARNC_TERM;
 stat : ARNC_PRINT arncExp                                                  # arncPrint
      | ARNC_DECL ID ARNC_VARSET arncExp                                    # arncDeclaration
      | ARNC_DECL GLOBAL ID ARNC_VARSET arncExp                             # arncGlobalDeclaration
-     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END             # arncAssign
-     | ARNC_ASSIGN GL ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END          # arncGlobalAssign
+     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END              # arncAssign
+     | ARNC_ASSIGN GL ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END           # arncGlobalAssign
      | ARNC_IF arncExp stat (ARNC_ELSE arncExp)* ARNC_ENDIF                # arncIf
      | ARNC_WHILE arncExp (stat)* ARNC_WHEND                               # arncWhile
      ;

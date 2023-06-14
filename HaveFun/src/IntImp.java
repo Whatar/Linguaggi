@@ -370,6 +370,154 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return ret;
     }
 
+    //------------------------------------------------------------------------------------------------
 
+    @Override public T visitArnc(ImpParser.ArncContext ctx) {
+        return visitChildren(ctx);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncPrint(ImpParser.ArncPrintContext ctx) {
+        System.out.println(visitExp(ctx.arncExp()));
+        return ComValue.INSTANCE;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncGlobalDeclaration(ImpParser.ArncGlobalDeclarationContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncAssign(ImpParser.ArncAssignContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncIf(ImpParser.ArncIfContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncWhile(ImpParser.ArncWhileContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncNat(ImpParser.ArncNatContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncFloat(ImpParser.ArncFloatContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncBool(ImpParser.ArncBoolContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncString(ImpParser.ArncStringContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncParExp(ImpParser.ArncParExpContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) { return 0 }
 
+    @Override public NatValue visitArncValone(ImpParser.ArncValoneContext ctx) { return 1; }
+
+    @Override public T visitArncId(ImpParser.ArncIdContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitArncFunCall(ImpParser.ArncFunCallContext ctx) { return visitChildren(ctx); }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public NatValue visitArncCalcOp(ImpParser.ArncCalcOpContext ctx) {
+        int operand = visitNatExp(ctx.arncExp(0));
+        int stackValue = 1; //TODO: make a stack for BaseOp
+
+        return switch (ctx.op.getType()) {
+            case ImpParser.ARNC_PLUS -> new NatValue(stackValue + operand);
+            case ImpParser.ARNC_MINUS -> new NatValue(stackValue - operand);
+            case ImpParser.ARNC_DIV -> new NatValue(stackValue * operand);
+            case ImpParser.ARNC_MUL -> new NatValue(stackValue / operand);
+            default -> null;
+        };
+    }
+
+    @Override
+    public BoolValue visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
+        boolean operand = visitNatExp(ctx.arncExp(0));
+        boolean stackValue = 1; //TODO: make a stack for BaseOp
+
+        return switch (ctx.op.getType()) {
+            case ImpParser.ARNC_EQUAL -> new BoolValue(stackValue == operand);
+            case ImpParser.ARNC_GRATER -> new BoolValue(stackValue > operand);
+            case ImpParser.ARNC_OR -> new BoolValue(stackValue | operand);
+            case ImpParser.ARNC_AND -> new BoolValue(stackValue & operand);
+            default -> null;
+        }
+    }
 }

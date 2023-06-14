@@ -4,21 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8b2469a-ec8d-459a-94e9-3170f0fc2cde" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/antlr4_runtime_4_12_0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Linguaggi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Linguaggi.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="f8b2469a-ec8d-459a-94e9-3170f0fc2cde" name="Changes" comment="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.g4" beforeDir="false" afterPath="$PROJECT_DIR$/HaveFun/src/Imp.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpBaseVisitor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpLexer.interp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpLexer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpLexer.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpVisitor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaveFun/src/IntImp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/IntImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/HaveFun/src/IntImp.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +92,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686609722187</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc">
+      <created>1686777542491</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1686777542491</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +118,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes" />
+    <MESSAGE value="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc" />
+    <option name="LAST_COMMIT_MESSAGE" value="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc" />
   </component>
 </project>
