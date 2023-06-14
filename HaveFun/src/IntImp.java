@@ -10,6 +10,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     public IntImp(Conf conf) {
         this.conf = conf;
+        openContexts.addLast("!global");
+        // new empty global context
+        conf.updateContext("!global", new HashMap<>());
     }
 
     private ComValue visitCom(ImpParser.ComContext ctx) {
@@ -283,6 +286,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         // check if the number of arguments is correct
         if (argsCopy.size() != ctx.exp().size()) {
+            System.out.println("exp"+ argsCopy);
+            System.out.println("args"+ctx.exp());
             System.err.println("Function " + id + " called with the wrong number of arguments");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 

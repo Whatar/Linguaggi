@@ -27,9 +27,9 @@ exp : NAT                                 # nat
     | exp op=(LT | LEQ | GEQ | GT) exp    # cmpExp
     | exp op=(EQQ | NEQ) exp              # eqExp
     | exp op=(AND | OR) exp               # logicExp
+    | ID LPAR exp* (COMMA exp)* RPAR      # funCall
     | ID                                  # id
     | ID GL                               # globalId
-    | ID LPAR exp* RPAR                   # funCall
     ;
 
 arnc : ARNC_SHOWTIME (stat)* ARNC_TERM;
@@ -88,7 +88,9 @@ FLOAT   : INT | (INT | '-' '0') '.' DIGIT+;
 fragment POS    : POSDIGIT DIGIT*;
 fragment DIGIT  : '0' | POSDIGIT;
 fragment POSDIGIT   : [1-9];
-STRING : '"'[A-Za-z]+[A-Za-z0-9' '_]*'"';
+STRING : '"' STRCHR* '"' ;
+fragment STRCHR : ~["\\\r\n] | ESC ;
+fragment ESC    : '\\' [btnfr"'\\] ;
 BOOL : 'true' | 'false' ;
 
 PLUS  : '+' ;
@@ -122,6 +124,8 @@ RPAR      : ')';
 LBRACE    : '{' ;
 RBRACE    : '}' ;
 SEMICOLON : ';' ;
+
+COMMA : ',' ;
 
 ARNC_INIT : '${' ;
 ARNC_END  : '}$' ;
@@ -158,7 +162,7 @@ ARNC_WHEND : 'CHILL';                               //WHILE END
 ARNC_VALZERO : '@I LIED';                           //VALUE 0
 ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
 
-ID : [A-Za-z_]+[A-Za-z0-9_]* ;
+ID : [A-Za-z]+[A-Za-z0-9]* ;
 //TODO : nomi variabili con cifre
 
 WS : [ \t\r\n]+ -> skip ;

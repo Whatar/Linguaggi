@@ -1,8 +1,22 @@
-fun factorial(n) {
-  if (n == 0) then { ReT = 1 }
-  else { ReT = factorial(n - 1) * n };
-
-  return ReT
+fun f(f) {
+   out(f);
+   f = 10;
+   out(f);
+   f = 100;
+   f = g(f);
+   out(f);
+   return g(f)
 }
 
-out(factorial(5))
+fun g(f) {
+  g = 20;
+  out(f);
+  f = 200;
+  out(g);
+  out(f);
+  return g
+}
+
+f = 99;
+out(f(g(f)));
+out(f)
