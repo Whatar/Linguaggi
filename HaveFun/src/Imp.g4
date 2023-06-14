@@ -15,6 +15,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
     | ARNC_INIT arnc ARNC_END                                           # arnoldC
     | OUT LPAR exp RPAR                                                 # out
+    | LBRACE com RBRACE LBRACE com RBRACE                               # nonDet
     ;
 
 exp : NAT                                 # nat

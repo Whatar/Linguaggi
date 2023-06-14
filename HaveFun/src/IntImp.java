@@ -10,8 +10,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     public IntImp(Conf conf) {
         this.conf = conf;
-        openContexts.addLast("!global");
+        openContexts.addLast("!general");
         // new empty global context
+        conf.updateContext("!general", new HashMap<>());
         conf.updateContext("!global", new HashMap<>());
     }
 
@@ -87,8 +88,39 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public ComValue visitGlobalAssign(ImpParser.GlobalAssignContext ctx) {
+        String id = ctx.ID().getText();
+        ExpValue<?> v = visitExp(ctx.exp());
+
+        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
+        currentContext.put(id, v);
+        conf.updateContext("!global", currentContext);
+
+        return ComValue.INSTANCE;
+    }
+
+    @Override
+    public ComValue visitNewGlobalAssign(ImpParser.NewGlobalAssignContext ctx) {
+        String id = ctx.ID().getText();
+        ExpValue<?> v = visitExp(ctx.exp());
+
+        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
+        currentContext.put(id, v);
+        conf.updateContext("!global", currentContext);
+
+        return ComValue.INSTANCE;
+    }
+
+    @Override
     public ComValue visitSkip(ImpParser.SkipContext ctx) {
         return ComValue.INSTANCE;
+    }
+
+
+    @Override
+    public ComValue visitNonDet(ImpParser.NonDetContext ctx) {
+        // randomly choose one of the two commands
+        return visitCom(ctx.com(new Random().nextInt(2)));
     }
 
     @Override
@@ -183,28 +215,33 @@ public class IntImp extends ImpBaseVisitor<Value> {
         String id = ctx.ID().getText();
 
         ExpValue ret;
-        if (openContexts.size() > 0){
-            Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
-            if (!funC.containsKey(id)) {
-                System.err.println("context: " + conf.getContext(openContexts.getLast()));
-                System.err.println("Variable " + id + " used but never instantiated");
-                System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+        Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
+        if (!funC.containsKey(id)) {
+            System.err.println("context: " + conf.getContext(openContexts.getLast()));
+            System.err.println("Variable " + id + " used but never instantiated");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
 
-                System.exit(1);
-            }
-            ret = funC.get(id);
+            System.exit(1);
         }
-        else{
-            if (!conf.contains(id)) {
-                System.err.println("Variable " + id + " used but never instantiated");
-                System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+        ret = funC.get(id);
 
-                System.exit(1);
-            }
-            ret = conf.get(id);
-        }
         return ret;
     }
+
+    public ExpValue<?>  visitGlobalId(ImpParser.GlobalIdContext ctx) {
+        String id = ctx.ID().getText();
+
+        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
+        if (!currentContext.containsKey(id)) {
+            System.err.println("context: " + conf.getContext("!global"));
+            System.err.println("Variable " + id + " used but never instantiated");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            System.exit(1);
+        }
+
+        return currentContext.get(id);
+    }
+
 
     @Override
     public BoolValue visitCmpExp(ImpParser.CmpExpContext ctx) {

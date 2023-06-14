@@ -35,6 +35,13 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNewGlobalAssign(ImpParser.NewGlobalAssignContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code nonDet}
+	 * labeled alternative in {@link ImpParser#com}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNonDet(ImpParser.NonDetContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code globalAssign}
 	 * labeled alternative in {@link ImpParser#com}.
 	 * @param ctx the parse tree

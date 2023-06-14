@@ -18,5 +18,5 @@ fun g(f) {
 }
 
 f = 99;
-out(f(g(f)));
-out(f)
+g = 42;
+{ out(f(g(f)));out(f) } nd { out(g(f(g)));out(g) }
