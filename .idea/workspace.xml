@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f8b2469a-ec8d-459a-94e9-3170f0fc2cde" name="Changes" comment="Changes">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/antlr4_runtime_4_12_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Linguaggi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Linguaggi.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.g4" beforeDir="false" afterPath="$PROJECT_DIR$/HaveFun/src/Imp.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpBaseVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpLexer.interp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpLexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpLexer.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/ImpVisitor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaveFun/src/IntImp.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +49,8 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/leo/Documenti/GitHub/Linguaggi/HaveFun"
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/home/leo/Documenti/GitHub/Linguaggi/HaveFun/src"
   }
 }]]></component>
   <component name="RecentsManager">
