@@ -1,7 +1,3 @@
-fun f(x, y) {
-  return y
-}
+fun f(x, y) { return 1 }
 
-out(f(1, 2));
-global t = 42;
-out(f(3, 4))
+out(1)
