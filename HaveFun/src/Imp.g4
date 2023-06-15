@@ -1,14 +1,15 @@
 grammar Imp;
 
-prog : fun* com EOF ;
+prog : fun* newGlobalAssign* com EOF ;
 
 fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
 vars: ID* (COMMA ID)* |;
 
+newGlobalAssign: GLOBAL ID ASSIGN exp SEMICOLON;
+
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign
-    | GLOBAL ID ASSIGN exp                                              # newGlobalAssign
     | ID GL ASSIGN exp                                                  # globalAssign
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
