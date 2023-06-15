@@ -8,15 +8,15 @@ vars: ID* (COMMA ID)* |;
 
 newGlobalAssign: GLOBAL ID ASSIGN exp SEMICOLON;
 
-com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
-    | ID ASSIGN exp                                                     # assign
-    | ID GL ASSIGN exp                                                  # globalAssign
-    | SKIPP                                                             # skip
-    | com SEMICOLON com                                                 # seq
-    | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
-    | ARNC_INIT ARNC_SHOWTIME arncCom ARNC_TERM ARNC_END                # arnoldC
-    | OUT LPAR exp RPAR                                                 # out
-    | LBRACE com RBRACE ND LBRACE com RBRACE                            # nonDet
+com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE                # if
+    | ID ASSIGN exp                                                                 # assign
+    | ID GL ASSIGN exp                                                              # globalAssign
+    | SKIPP                                                                         # skip
+    | com SEMICOLON com                                                             # seq
+    | WHILE LPAR exp RPAR LBRACE com RBRACE                                         # while
+    | ARNC_INIT (arncMet)* ARNC_SHOWTIME arncCom ARNC_TERM (arncMet)* ARNC_END      # arnoldC
+    | OUT LPAR exp RPAR                                                             # out
+    | LBRACE com RBRACE ND LBRACE com RBRACE                                        # nonDet
     ;
 
 exp : NAT                                 # nat
@@ -34,14 +34,26 @@ exp : NAT                                 # nat
     | ID GL                               # globalId
     ;
 
-arncCom : ARNC_PRINT arncExp                                               # arncPrint
-     | ARNC_DECL ID ARNC_VARSET arncExp                                    # arncDeclaration
-     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END              # arncAssign
-     | ARNC_SLY GL ID ID                                                   # arncGlobalAssign
-     | ARNC_IF arncExp arncCom (ARNC_ELSE arncExp)* ARNC_ENDIF             # arncIf
-     | ARNC_WHILE arncExp arncCom ARNC_WHEND                               # arncWhile
-     | arncCom arncCom                                                     # arncSeq
+arncCom : ARNC_PRINT arncExp                                        # arncPrint
+     | ARNC_DECL ID arncVarAss                                      # arncDeclaration
+     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp (arncOp)* ARNC_OP_END    # arncOpResAssign
+     | ARNC_IF arncExp arncCom (ARNC_ELSE arncExp)* ARNC_ENDIF      # arncIf
+     | ARNC_WHILE arncExp arncCom ARNC_WHEND                        # arncWhile
+     | ARNC_METASSIGN ID arncCom                                    # arncMetAss
+     | ARNC_CALLMET ID (arncExp)*                                   # arncMetCall
+     | arncCom arncCom                                              # arncSeq
      ;
+
+arncVarAss : ARNC_VARSET arncExp                                          # arncAssign
+           | ARNC_SLY ID GL arncExp                                       # arncGlobalAssign
+           ;
+
+arncMet : ARNC_METHOD ID (ARNC_METARGS ID)* arncMetBody ARNC_METCLOSE   # arncMethod
+        ;
+
+arncMetBody : ARNC_METNONVOID arncCom ARNC_RET arncExp              # arncMetNonVoid
+            | arncCom                                               # arncMetVoid
+            ;
 
 arncExp : NAT                                                       # arncNat
          | FLOAT                                                    # arncFloat
@@ -56,11 +68,9 @@ arncExp : NAT                                                       # arncNat
          ;
 
 arncOp : (ARNC_MUL | ARNC_DIV | ARNC_PLUS | ARNC_MINUS) arncExp     # arncCalcOp
-         | (ARNC_EQUAL | ARNC_GRATER | ARNC_OR | ARNC_AND) arncExp  # arncLogOp
+         | (ARNC_EQUAL | ARNC_GRATER) arncExp                       # arncCmpOp
+         | (ARNC_OR | ARNC_AND) arncExp                             # arncLogOp
          ;
-//TODO : per ora ho solo copiato per testare, probabilmente va bene ma devo controllare se servono tutte le operazioni
-
-//TODO : implementare @NO PROBLEMO e @I LIED come valori costanti
 
 INITFUN: 'fun';
 RETURN: 'return';
@@ -123,6 +133,7 @@ ARNC_TERM : 'YOU HAVE BEEN TERMINATED';             //main end
 ARNC_PRINT : 'TALK TO THE HAND';                    //print string or var
 ARNC_DECL : 'HEY CHRISTMAS TREE';                   //VAR DECLARATION --> HEY CHRISTMAS TREE variablename
 ARNC_VARSET : 'YOU SET US UP';                      //VAR SETTING --> YOU SET US UP initialvalue
+ARNC_SLY: 'ARNOLD OR SLY';                          //GLOBAL VAR ASSIGNMENT --> ARNOLD OR SLY globalvar var
 
 ARNC_ASSIGN : 'GET TO THE CHOPPER';                 //OP VAR ASSIGNMENT --> GET TO THE CHOPPER myvaR
 ARNC_OP_BASE : 'HERE IS MY INVITATION';             //OP SET STACK TOP --> HERE IS MY INVITATION firstOperand
@@ -150,7 +161,14 @@ ARNC_WHEND : 'CHILL';                               //WHILE END
 ARNC_VALZERO : '@I LIED';                           //VALUE 0
 ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
 
-ARNC_SLY: 'ARNOLD OR SLY';                          //GLOBAL VAR ASSIGNMENT --> ARNOLD OR SLY globalvar var
+ARNC_METHOD : 'LISTEN TO ME VERY CAREFULLY';
+ARNC_METCLOSE : 'HASTA LA VISTA, BABY';
+ARNC_METARGS : 'I NEED YOUR CLOTHES YOUR BOOTS AND YOUR MOTORCYCLE';
+ARNC_METNONVOID : 'GIVE THESE PEOPLE AIR';
+ARNC_RET : 'I\'LL BE BACK';
+ARNC_METASSIGN : 'GET YOUR ASS TO MARS';            //ASSIGN VAR FROM METHOD CALL --> GET YOUR ASS TO MARS result4
+ARNC_CALLMET : 'DO IT NOW';                         //CAL METHOD --> DO IT NOW modulo 5559 345
+
 
 ID : [A-Za-z]+[A-Za-z0-9]* ;
 

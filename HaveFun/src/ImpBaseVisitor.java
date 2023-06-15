@@ -1,4 +1,4 @@
-// Generated from C:/Users/leona/Documents/Github/Linguaggi/HaveFun/src\Imp.g4 by ANTLR 4.12.0
+// Generated from java-escape by ANTLR 4.11.1
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -199,6 +199,13 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitArncMetCall(ImpParser.ArncMetCallContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -207,6 +214,13 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitArncIf(ImpParser.ArncIfContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -234,6 +248,13 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitArncMetAss(ImpParser.ArncMetAssContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitArncAssign(ImpParser.ArncAssignContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -242,6 +263,27 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitArncMethod(ImpParser.ArncMethodContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitArncMetVoid(ImpParser.ArncMetVoidContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -319,6 +361,13 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitArncCalcOp(ImpParser.ArncCalcOpContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

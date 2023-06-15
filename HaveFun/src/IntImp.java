@@ -298,8 +298,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArncBool(ImpParser.ArncBoolContext ctx) {
-        return super.visitArncBool(ctx);
+    public BoolValue visitArncBool(ImpParser.ArncBoolContext ctx) {
+        return new BoolValue(Boolean.parseBoolean(ctx.BOOL().getText()));
     }
 
     @Override
@@ -313,13 +313,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArncValzero(ImpParser.ArncValzeroContext ctx) {
-        return super.visitArncValzero(ctx);
+    public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) {
+        return new NatValue(0);
     }
 
     @Override
     public Value visitArncValone(ImpParser.ArncValoneContext ctx) {
-        return super.visitArncValone(ctx);
+        return new NatValue(1);
     }
 
     @Override
@@ -344,7 +344,10 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
-        return super.visitArncLogOp(ctx);
+        //boolean stackTop = false;
+        //ExpValue<?>  left = visitArncBool(ctx.arncExp());
+
+        return null;
     }
 
     public ExpValue<?>  visitGlobalId(ImpParser.GlobalIdContext ctx) {
