@@ -14,7 +14,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
-    | ARNC_INIT arnc ARNC_END                                           # arnoldC
+    | ARNC_INIT ARNC_SHOWTIME arncCom ARNC_TERM ARNC_END                # arnoldC
     | OUT LPAR exp RPAR                                                 # out
     | LBRACE com RBRACE ND LBRACE com RBRACE                            # nonDet
     ;
@@ -34,15 +34,13 @@ exp : NAT                                 # nat
     | ID GL                               # globalId
     ;
 
-arnc : ARNC_SHOWTIME (stat)* ARNC_TERM;
-
-stat : ARNC_PRINT arncExp                                                  # arncPrint
+arncCom : ARNC_PRINT arncExp                                               # arncPrint
      | ARNC_DECL ID ARNC_VARSET arncExp                                    # arncDeclaration
-     | ARNC_DECL GLOBAL ID ARNC_VARSET arncExp                             # arncGlobalDeclaration
      | ARNC_ASSIGN ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END              # arncAssign
-     | ARNC_ASSIGN GL ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END           # arncGlobalAssign
-     | ARNC_IF arncExp stat (ARNC_ELSE arncExp)* ARNC_ENDIF                # arncIf
-     | ARNC_WHILE arncExp (stat)* ARNC_WHEND                               # arncWhile
+     | ARNC_SLY GL ID ID                                                   # arncGlobalAssign
+     | ARNC_IF arncExp arncCom (ARNC_ELSE arncExp)* ARNC_ENDIF             # arncIf
+     | ARNC_WHILE arncExp arncCom ARNC_WHEND                               # arncWhile
+     | arncCom arncCom                                                     # arncSeq
      ;
 
 arncExp : NAT                                                       # arncNat
@@ -151,6 +149,8 @@ ARNC_WHEND : 'CHILL';                               //WHILE END
 
 ARNC_VALZERO : '@I LIED';                           //VALUE 0
 ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
+
+ARNC_SLY: 'ARNOLD OR SLY';                          //GLOBAL VAR ASSIGNMENT --> ARNOLD OR SLY globalvar var
 
 ID : [A-Za-z]+[A-Za-z0-9]* ;
 

@@ -6,7 +6,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     private final Conf conf;
 
-    private LinkedList<String> openContexts = new LinkedList<>();
+    private final LinkedList<String> openContexts = new LinkedList<>();
 
     public IntImp(Conf conf) {
         this.conf = conf;
@@ -81,7 +81,16 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArnoldC(ImpParser.ArnoldCContext ctx) {
-        return super.visitArnoldC(ctx);
+        return visitArnc(ctx.arncCom());
+    }
+
+    private Value visitArnc(ImpParser.ArncComContext ctx) {
+        if (ctx == null) {
+            return null;
+        }
+        else {
+            return visit(ctx);
+        }
     }
 
     @Override
@@ -230,7 +239,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
     public ExpValue<?> visitId(ImpParser.IdContext ctx) {
         String id = ctx.ID().getText();
 
-        ExpValue ret;
+        ExpValue<?> ret;
         Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
         if (!funC.containsKey(id)) {
             System.err.println("Variable " + id + " used but never instantiated");
@@ -244,33 +253,28 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArnc(ImpParser.ArncContext ctx) {
-        return super.visitArnc(ctx);
+    public ExpValue<?> visitArncPrint(ImpParser.ArncPrintContext ctx) {
+        System.out.println(visitArncExp(ctx.arncExp()));
+        return null;
+    }
+
+    private ExpValue<?> visitArncExp(ImpParser.ArncExpContext ctx) {
+        return (ExpValue<?>) visit(ctx);
     }
 
     @Override
-    public Value visitArncPrint(ImpParser.ArncPrintContext ctx) {
-        return super.visitArncPrint(ctx);
+    public ExpValue<?> visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) {
+        return null;
     }
 
     @Override
-    public Value visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) {
-        return super.visitArncDeclaration(ctx);
+    public ExpValue<?> visitArncAssign(ImpParser.ArncAssignContext ctx) {
+        return null;
     }
 
     @Override
-    public Value visitArncGlobalDeclaration(ImpParser.ArncGlobalDeclarationContext ctx) {
-        return super.visitArncGlobalDeclaration(ctx);
-    }
-
-    @Override
-    public Value visitArncAssign(ImpParser.ArncAssignContext ctx) {
-        return super.visitArncAssign(ctx);
-    }
-
-    @Override
-    public Value visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
-        return super.visitArncGlobalAssign(ctx);
+    public ExpValue<?> visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
+        return null;
     }
 
     @Override
@@ -465,8 +469,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
         if (openContexts.contains(id)) {
             // let's loop through the context to find the last name of the function, and add _rec to it
             String newId = id;
-            for (int i = 0; i < openContexts.size(); i++) {
-                String current_context = openContexts.get(i);
+            for (String current_context : openContexts) {
                 if (current_context.contains("!")) {
                     if (current_context.split("!")[0].equals(id)) {
                         newId = current_context;
@@ -482,7 +485,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
         conf.updateContext(openContexts.getLast(), argsCopy); // update the context with the arguments
 
         visitCom(functionContext.getCtx().com());
-        ExpValue ret = visitExp(functionContext.getCtx().exp());
+        ExpValue<?> ret = visitExp(functionContext.getCtx().exp());
         openContexts.pollLast();
         return ret;
     }
