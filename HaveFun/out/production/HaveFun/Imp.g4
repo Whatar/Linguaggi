@@ -1,14 +1,15 @@
 grammar Imp;
 
-prog : fun* com EOF ;
+prog : fun* newGlobalAssign* com EOF ;
 
 fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
 vars: ID* (COMMA ID)* |;
 
+newGlobalAssign: GLOBAL ID ASSIGN exp SEMICOLON;
+
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign
-    | GLOBAL ID ASSIGN exp                                              # newGlobalAssign
     | ID GL ASSIGN exp                                                  # globalAssign
     | SKIPP                                                             # skip
     | com SEMICOLON com                                                 # seq
@@ -35,44 +36,31 @@ exp : NAT                                 # nat
 
 arnc : ARNC_SHOWTIME (stat)* ARNC_TERM;
 
-stat : ARNC_PRINT arnc_exp                                                  # arnc_print
-     | ARNC_DECL ID ARNC_VARSET arnc_exp                                    # arnc_declaration
-     | ARNC_DECL GLOBAL ID ARNC_VARSET arnc_exp                             # arnc_globalDeclaration
-     | ARNC_ASSIGN ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END             # arnc_assign
-     | ARNC_ASSIGN GL ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END          # arnc_globalAssign
-     | ARNC_IF arnc_exp stat (ARNC_ELSE arnc_exp)* ARNC_ENDIF            # arnc_if
-     | ARNC_WHILE arnc_exp (stat)* ARNC_WHEND                               # arnc_while
+stat : ARNC_PRINT arncExp                                                  # arncPrint
+     | ARNC_DECL ID ARNC_VARSET arncExp                                    # arncDeclaration
+     | ARNC_DECL GLOBAL ID ARNC_VARSET arncExp                             # arncGlobalDeclaration
+     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END              # arncAssign
+     | ARNC_ASSIGN GL ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END           # arncGlobalAssign
+     | ARNC_IF arncExp stat (ARNC_ELSE arncExp)* ARNC_ENDIF                # arncIf
+     | ARNC_WHILE arncExp (stat)* ARNC_WHEND                               # arncWhile
      ;
 
-arnc_exp : NAT                                          # arnc_nat
-         | FLOAT                                        # arnc_float
-         | BOOL                                         # arnc_bool
-         | STRING                                       # arnc_string
-         | LPAR arnc_exp RPAR                           # arnc_parExp
-         | <assoc=right> arnc_exp POW arnc_exp          # arnc_pow
-         | NOT arnc_exp                                 # arnc_not
-         | arnc_exp op=(DIV | MUL | MOD) arnc_exp       # arnc_divMulMod
-         | arnc_exp op=(PLUS | MINUS) arnc_exp          # arnc_plusMinus
-         | arnc_exp op=(LT | LEQ | GEQ | GT) arnc_exp   # arnc_cmpExp
-         | arnc_exp op=(EQQ | NEQ) arnc_exp             # arnc_eqExp
-         | arnc_exp op=(AND | OR) arnc_exp              # arnc_logicExp
-         | ID                                           # arnc_id
-         | ID GL                                        # arnc_globalId
-         | ID LPAR exp* RPAR                            # arnc_funCall
-         | ARNC_VALONE                                  # arnc_valzero
-         | ARNC_VALZERO                                 # arnc_valone
+arncExp : NAT                                                       # arncNat
+         | FLOAT                                                    # arncFloat
+         | BOOL                                                     # arncBool
+         | STRING                                                   # arncString
+         | LPAR arncExp RPAR                                        # arncParExp
+         | ARNC_VALONE                                              # arncValzero
+         | ARNC_VALZERO                                             # arncValone
+         | ID                                                       # arncId
+         | ID GL                                                    # arncGlobalId
+         | ID LPAR arncExp* RPAR                                    # arncFunCall   //check if needed
+         ;
+
+arncOp : (ARNC_MUL | ARNC_DIV | ARNC_PLUS | ARNC_MINUS) arncExp     # arncCalcOp
+         | (ARNC_EQUAL | ARNC_GRATER | ARNC_OR | ARNC_AND) arncExp  # arncLogOp
          ;
 //TODO : per ora ho solo copiato per testare, probabilmente va bene ma devo controllare se servono tutte le operazioni
-
-arnc_op : ARNC_PLUS arnc_exp                            # arnc_plus
-        | ARNC_MINUS arnc_exp                           # arnc_minus
-        | ARNC_MUL arnc_exp                             # arnc_mul
-        | ARNC_DIV arnc_exp                             # arnc_div
-        | ARNC_EQUAL arnc_exp                           # arnc_equ
-        | ARNC_GRATER arnc_exp                          # arnc_gt
-        | ARNC_OR arnc_exp                              # arnc_or
-        | ARNC_AND arnc_exp                             # arnc_and
-        ;
 
 //TODO : implementare @NO PROBLEMO e @I LIED come valori costanti
 
@@ -165,6 +153,5 @@ ARNC_VALZERO : '@I LIED';                           //VALUE 0
 ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
 
 ID : [A-Za-z]+[A-Za-z0-9]* ;
-//TODO : nomi variabili con cifre
 
 WS : [ \t\r\n]+ -> skip ;

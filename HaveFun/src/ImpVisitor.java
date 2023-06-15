@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from C:/Users/leona/Documents/Github/Linguaggi/HaveFun/src\Imp.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -28,8 +28,7 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVars(ImpParser.VarsContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code newGlobalAssign}
-	 * labeled alternative in {@link ImpParser#com}.
+	 * Visit a parse tree produced by {@link ImpParser#newGlobalAssign}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
