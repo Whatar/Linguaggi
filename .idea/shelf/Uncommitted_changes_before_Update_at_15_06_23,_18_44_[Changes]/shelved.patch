@@ -1,0 +1,384 @@
+Index: HaveFun/src/Imp.g4
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>grammar Imp;\n\nprog : fun* com EOF ;\n\nfun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;\n\nvars: ID* (COMMA ID)* |;\n\ncom : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if\n    | ID ASSIGN exp                                                     # assign\n    | GLOBAL ID ASSIGN exp                                              # newGlobalAssign\n    | ID GL ASSIGN exp                                                  # globalAssign\n    | SKIPP                                                             # skip\n    | com SEMICOLON com                                                 # seq\n    | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while\n    | ARNC_INIT arnc ARNC_END                                           # arnoldC\n    | OUT LPAR exp RPAR                                                 # out\n    | LBRACE com RBRACE ND LBRACE com RBRACE                            # nonDet\n    ;\n\nexp : NAT                                 # nat\n    | BOOL                                # bool\n    | LPAR exp RPAR                       # parExp\n    | <assoc=right> exp POW exp           # pow\n    | NOT exp                             # not\n    | exp op=(DIV | MUL | MOD) exp        # divMulMod\n    | exp op=(PLUS | MINUS) exp           # plusMinus\n    | exp op=(LT | LEQ | GEQ | GT) exp    # cmpExp\n    | exp op=(EQQ | NEQ) exp              # eqExp\n    | exp op=(AND | OR) exp               # logicExp\n    | ID LPAR exp* (COMMA exp)* RPAR      # funCall\n    | ID                                  # id\n    | ID GL                               # globalId\n    ;\n\narnc : ARNC_SHOWTIME (stat)* ARNC_TERM;\n\nstat : ARNC_PRINT arncExp                                                  # arncPrint\n     | ARNC_DECL ID ARNC_VARSET arncExp                                    # arncDeclaration\n     | ARNC_DECL GLOBAL ID ARNC_VARSET arncExp                             # arncGlobalDeclaration\n     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END              # arncAssign\n     | ARNC_ASSIGN GL ID ARNC_OP_BASE arncExp arncOp ARNC_OP_END           # arncGlobalAssign\n     | ARNC_IF arncExp stat (ARNC_ELSE arncExp)* ARNC_ENDIF                # arncIf\n     | ARNC_WHILE arncExp (stat)* ARNC_WHEND                               # arncWhile\n     ;\n\narncExp : NAT                                                       # arncNat\n         | FLOAT                                                    # arncFloat\n         | BOOL                                                     # arncBool\n         | STRING                                                   # arncString\n         | LPAR arncExp RPAR                                        # arncParExp\n         | ARNC_VALONE                                              # arncValzero\n         | ARNC_VALZERO                                             # arncValone\n         | ID                                                       # arncId\n         | ID GL                                                    # arncGlobalId\n         | ID LPAR arncExp* RPAR                                    # arncFunCall   //check if needed\n         ;\n\narncOp : (ARNC_MUL | ARNC_DIV | ARNC_PLUS | ARNC_MINUS) arncExp     # arncCalcOp\n         | (ARNC_EQUAL | ARNC_GRATER | ARNC_OR | ARNC_AND) arncExp  # arncLogOp\n         ;\n//TODO : per ora ho solo copiato per testare, probabilmente va bene ma devo controllare se servono tutte le operazioni\n\n//TODO : implementare @NO PROBLEMO e @I LIED come valori costanti\n\nINITFUN: 'fun';\nRETURN: 'return';\n\nGLOBAL: 'global';\n\nGL: '.g';\nND: 'nd';\n\nNAT : '0' | [1-9][0-9]* ;\nINT    : NAT | '-' POS;\nFLOAT   : INT | (INT | '-' '0') '.' DIGIT+;\nfragment POS    : POSDIGIT DIGIT*;\nfragment DIGIT  : '0' | POSDIGIT;\nfragment POSDIGIT   : [1-9];\nSTRING : '\"' STRCHR* '\"' ;\nfragment STRCHR : ~[\"\\\\\\r\\n] | ESC ;\nfragment ESC    : '\\\\' [btnfr\"'\\\\] ;\nBOOL : 'true' | 'false' ;\n\nPLUS  : '+' ;\nMINUS : '-';\nMUL   : '*' ;\nDIV   : '/' ;\nMOD   : 'mod' ;\nPOW   : '^' ;\n\nAND : '&' ;\nOR  : '|' ;\n\nEQQ : '==' ;\nNEQ : '!=' ;\nLEQ : '<=' ;\nGEQ : '>=' ;\nLT  : '<' ;\nGT  : '>' ;\nNOT : '!' ;\n\nIF     : 'if' ;\nTHEN   : 'then' ;\nELSE   : 'else' ;\nWHILE  : 'while' ;\nSKIPP  : 'skip' ;\nASSIGN : '=' ;\nOUT    : 'out' ;\n\nLPAR      : '(' ;\nRPAR      : ')';\nLBRACE    : '{' ;\nRBRACE    : '}' ;\nSEMICOLON : ';' ;\n\nCOMMA : ',' ;\n\nARNC_INIT : '${' ;\nARNC_END  : '}$' ;\n\nARNC_SHOWTIME : 'IT\\'S SHOWTIME';                   //main begin\nARNC_TERM : 'YOU HAVE BEEN TERMINATED';             //main end\nARNC_PRINT : 'TALK TO THE HAND';                    //print string or var\nARNC_DECL : 'HEY CHRISTMAS TREE';                   //VAR DECLARATION --> HEY CHRISTMAS TREE variablename\nARNC_VARSET : 'YOU SET US UP';                      //VAR SETTING --> YOU SET US UP initialvalue\n\nARNC_ASSIGN : 'GET TO THE CHOPPER';                 //OP VAR ASSIGNMENT --> GET TO THE CHOPPER myvaR\nARNC_OP_BASE : 'HERE IS MY INVITATION';             //OP SET STACK TOP --> HERE IS MY INVITATION firstOperand\nARNC_PLUS : 'GET UP';\nARNC_MINUS : 'GET DOWN';\nARNC_MUL : 'YOU\\'RE FIRED';\nARNC_DIV : 'HE HAD TO SPLIT';\nARNC_OP_END : 'ENOUGH TALK';\n\nARNC_EQUAL : 'YOU ARE NOT YOU YOU ARE ME';          //LOGICAL EQUAL TO --> YOU ARE NOT YOU YOU ARE ME operand\nARNC_GRATER : 'LET OFF SOME STEAM BENNET';          //LOGICAL GRATER THAN --> LET OFF SOME STEAM BENNET operand\nARNC_OR : 'CONSIDER THAT A DIVORCE';                //LOGICAL OR --> CONSIDER THAT A DIVORCE operand\nARNC_AND : 'KNOCK KNOCK';                           //LOGICAL AND --> KNOCK KNOCK operand\n\nARNC_IF : 'BECAUSE I\\'M GOING TO SAY PLEASE';       //CONDITIONAL IF --> BECAUSE I'M GOING TO SAY PLEASE value\n                                                    //[statements]\nARNC_ELSE : 'BULLSHIT';                             //ELSE\n                                                    //[statements]\nARNC_ENDIF : 'YOU HAVE NO RESPECT FOR LOGIC';       //IF END\n\nARNC_WHILE : 'STICK AROUND';                        //WHILE LOOP --> STICK AROUND value\n                                                    //[statements]\nARNC_WHEND : 'CHILL';                               //WHILE END\n\nARNC_VALZERO : '@I LIED';                           //VALUE 0\nARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1\n\nID : [A-Za-z]+[A-Za-z0-9]* ;\n\nWS : [ \\t\\r\\n]+ -> skip ;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/HaveFun/src/Imp.g4 b/HaveFun/src/Imp.g4
+--- a/HaveFun/src/Imp.g4	(revision e560fc31b05239b82424510c04848a5634aeae77)
++++ b/HaveFun/src/Imp.g4	(date 1686847039266)
+@@ -1,6 +1,6 @@
+ grammar Imp;
+ 
+-prog : fun* com EOF ;
++prog : fun* com EOF;
+ 
+ fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
+ 
+@@ -59,9 +59,6 @@
+ arncOp : (ARNC_MUL | ARNC_DIV | ARNC_PLUS | ARNC_MINUS) arncExp     # arncCalcOp
+          | (ARNC_EQUAL | ARNC_GRATER | ARNC_OR | ARNC_AND) arncExp  # arncLogOp
+          ;
+-//TODO : per ora ho solo copiato per testare, probabilmente va bene ma devo controllare se servono tutte le operazioni
+-
+-//TODO : implementare @NO PROBLEMO e @I LIED come valori costanti
+ 
+ INITFUN: 'fun';
+ RETURN: 'return';
+Index: HaveFun/src/IntImp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import value.*;\n\nimport java.util.*;\n\npublic class IntImp extends ImpBaseVisitor<Value> {\n\n    private final Conf conf;\n\n    private LinkedList<String> openContexts = new LinkedList<>();\n\n    public IntImp(Conf conf) {\n        this.conf = conf;\n        openContexts.addLast(\"!general\");\n        // new empty global context\n        conf.updateContext(\"!general\", new HashMap<>());\n        conf.updateContext(\"!global\", new HashMap<>());\n    }\n\n    private ComValue visitCom(ImpParser.ComContext ctx) {\n        if (ctx == null)\n            return null;\n        else {\n            return (ComValue) visit(ctx);\n        }\n    }\n\n    private ExpValue<?> visitExp(ImpParser.ExpContext ctx) {\n        return (ExpValue<?>) visit(ctx);\n    }\n\n    private int visitNatExp(ImpParser.ExpContext ctx) {\n        try {\n            return ((NatValue) visitExp(ctx)).toJavaValue();\n        } catch (ClassCastException e) {\n            System.err.println(\"Type mismatch exception!\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n            System.err.println(\">>>>>>>>>>>>>>>>>>>>>>>>\");\n            System.err.println(ctx.getText());\n            System.err.println(\"<<<<<<<<<<<<<<<<<<<<<<<<\");\n            System.err.println(\"> Natural expression expected.\");\n            System.exit(1);\n        }\n\n        return 0; // unreachable code\n    }\n\n    private boolean visitBoolExp(ImpParser.ExpContext ctx) {\n        try {\n            return ((BoolValue) visitExp(ctx)).toJavaValue();\n        } catch (ClassCastException e) {\n            System.err.println(\"Type mismatch exception!\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n            System.err.println(\">>>>>>>>>>>>>>>>>>>>>>>>\");\n            System.err.println(ctx.getText());\n            System.err.println(\"<<<<<<<<<<<<<<<<<<<<<<<<\");\n            System.err.println(\"> Boolean expression expected.\");\n            System.exit(1);\n        }\n\n        return false; // unreachable code\n    }\n\n    @Override\n    public ComValue visitProg(ImpParser.ProgContext ctx) {\n        for (int i = 0 ; i < ctx.fun().size() ; i++) {\n            visitFun(ctx.fun(i));\n        }\n        return visitCom(ctx.com());\n    }\n\n    @Override\n    public ComValue visitIf(ImpParser.IfContext ctx) {\n        return visitBoolExp(ctx.exp())\n                ? visitCom(ctx.com(0))\n                : visitCom(ctx.com(1));\n    }\n\n    @Override\n    public ComValue visitAssign(ImpParser.AssignContext ctx) {\n        String id = ctx.ID().getText();\n        ExpValue<?> v = visitExp(ctx.exp());\n\n        Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());\n        currentContext.put(id, v);\n        conf.updateContext(openContexts.getLast(), currentContext);\n\n        return ComValue.INSTANCE;\n    }\n\n    @Override\n    public ComValue visitGlobalAssign(ImpParser.GlobalAssignContext ctx) {\n        String id = ctx.ID().getText();\n        ExpValue<?> v = visitExp(ctx.exp());\n\n        Map<String, ExpValue<?>> currentContext = conf.getContext(\"!global\");\n        currentContext.put(id, v);\n        conf.updateContext(\"!global\", currentContext);\n\n        return ComValue.INSTANCE;\n    }\n\n    @Override\n    public ComValue visitNewGlobalAssign(ImpParser.NewGlobalAssignContext ctx) {\n        String id = ctx.ID().getText();\n        ExpValue<?> v = visitExp(ctx.exp());\n\n        // if the current context is not !general, then we cannot assign to global variables\n        if (!openContexts.getLast().equals(\"!general\")) {\n            System.err.println(\"Global variable assignment is not allowed in this context.\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n            System.exit(1);\n        }\n\n        Map<String, ExpValue<?>> currentContext = conf.getContext(\"!global\");\n        currentContext.put(id, v);\n        conf.updateContext(\"!global\", currentContext);\n\n        return ComValue.INSTANCE;\n    }\n\n    @Override\n    public ComValue visitSkip(ImpParser.SkipContext ctx) {\n        return ComValue.INSTANCE;\n    }\n\n\n    @Override\n    public ComValue visitNonDet(ImpParser.NonDetContext ctx) {\n        // randomly choose one of the two commands\n        return visitCom(ctx.com(new Random().nextInt(2)));\n    }\n\n    @Override\n    public ComValue visitSeq(ImpParser.SeqContext ctx) {\n        visitCom(ctx.com(0));\n        return visitCom(ctx.com(1));\n    }\n\n    @Override\n    public ComValue visitWhile(ImpParser.WhileContext ctx) {\n        if (!visitBoolExp(ctx.exp()))\n            return ComValue.INSTANCE;\n\n        visitCom(ctx.com());\n\n        return visitWhile(ctx);\n    }\n\n    @Override\n    public ComValue visitOut(ImpParser.OutContext ctx) {\n        System.out.println(visitExp(ctx.exp()));\n        return ComValue.INSTANCE;\n    }\n\n    @Override\n    public NatValue visitNat(ImpParser.NatContext ctx) {\n        return new NatValue(Integer.parseInt(ctx.NAT().getText()));\n    }\n\n    @Override\n    public BoolValue visitBool(ImpParser.BoolContext ctx) {\n        return new BoolValue(Boolean.parseBoolean(ctx.BOOL().getText()));\n    }\n\n    @Override\n    public ExpValue<?> visitParExp(ImpParser.ParExpContext ctx) {\n        return visitExp(ctx.exp());\n    }\n\n    @Override\n    public NatValue visitPow(ImpParser.PowContext ctx) {\n        int base = visitNatExp(ctx.exp(0));\n        int exp = visitNatExp(ctx.exp(1));\n\n        return new NatValue((int) Math.pow(base, exp));\n    }\n\n    @Override\n    public BoolValue visitNot(ImpParser.NotContext ctx) {\n        return new BoolValue(!visitBoolExp(ctx.exp()));\n    }\n\n    @Override\n    public NatValue visitDivMulMod(ImpParser.DivMulModContext ctx) {\n        int left = visitNatExp(ctx.exp(0));\n        int right = visitNatExp(ctx.exp(1));\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.DIV -> new NatValue(left / right);\n            case ImpParser.MUL -> new NatValue(left * right);\n            case ImpParser.MOD -> new NatValue(left % right);\n            default -> null;\n        };\n    }\n\n    @Override\n    public NatValue visitPlusMinus(ImpParser.PlusMinusContext ctx) {\n        int left = visitNatExp(ctx.exp(0));\n        int right = visitNatExp(ctx.exp(1));\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.PLUS -> new NatValue(left + right);\n            case ImpParser.MINUS -> new NatValue(Math.max(left - right, 0));\n            default -> null;\n        };\n    }\n\n    @Override\n    public BoolValue visitEqExp(ImpParser.EqExpContext ctx) {\n        ExpValue<?> left = visitExp(ctx.exp(0));\n        ExpValue<?> right = visitExp(ctx.exp(1));\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.EQQ -> new BoolValue(left.equals(right));\n            case ImpParser.NEQ -> new BoolValue(!left.equals(right));\n            default -> null; // unreachable code\n        };\n    }\n\n    @Override\n    public ExpValue<?> visitId(ImpParser.IdContext ctx) {\n        String id = ctx.ID().getText();\n\n        ExpValue ret;\n        Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());\n        if (!funC.containsKey(id)) {\n            System.err.println(\"Variable \" + id + \" used but never instantiated\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n\n            System.exit(1);\n        }\n        ret = funC.get(id);\n\n        return ret;\n    }\n\n    public ExpValue<?>  visitGlobalId(ImpParser.GlobalIdContext ctx) {\n        String id = ctx.ID().getText();\n\n        Map<String, ExpValue<?>> currentContext = conf.getContext(\"!global\");\n        if (!currentContext.containsKey(id)) {\n            System.err.println(\"Variable \" + id + \" used but never instantiated\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n            System.exit(1);\n        }\n\n        return currentContext.get(id);\n    }\n\n\n    @Override\n    public BoolValue visitCmpExp(ImpParser.CmpExpContext ctx) {\n        int left = visitNatExp(ctx.exp(0));\n        int right = visitNatExp(ctx.exp(1));\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.GEQ -> new BoolValue(left >= right);\n            case ImpParser.LEQ -> new BoolValue(left <= right);\n            case ImpParser.LT  -> new BoolValue(left < right);\n            case ImpParser.GT  -> new BoolValue(left > right);\n            default -> null;\n        };\n    }\n\n    @Override\n    public BoolValue visitLogicExp(ImpParser.LogicExpContext ctx) {\n        boolean left = visitBoolExp(ctx.exp(0));\n        boolean right = visitBoolExp(ctx.exp(1));\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.AND -> new BoolValue(left && right);\n            case ImpParser.OR -> new BoolValue(left || right);\n            default -> null;\n        };\n    }\n\n    // we save the function context in the conf, so we can use it later\n    @Override\n    public ExpValue<?> visitFun(ImpParser.FunContext ctx) {\n        Map<String, ExpValue<?>> args = new HashMap<>();\n\n        for (int i = 0; i < ctx.vars().getChildCount(); i++) {\n            if (ctx.vars().getChild(i).getText().equals(\",\"))\n                continue;\n            String id = ctx.vars().getChild(i).getText();\n\n            if (!conf.contains(id)) {\n                args.put(id, new NatValue(0));\n            }\n            else {\n                System.err.println(\"Parameter name \" + id + \" clashes with previous parameters\");\n                System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n            }\n        }\n\n        Conf.FunctionContext functionContext = new Conf.FunctionContext(ctx, args);\n\n        if(conf.containsFunction(ctx.ID().getText())){\n            System.err.println(\"Fun \" + ctx.ID().getText() + \" already defined\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n\n            System.exit(1);\n        }\n\n        conf.updateFunction(ctx.ID().getText(), functionContext);\n\n        return new NatValue(0);\n    }\n\n    @Override\n    public ExpValue<?> visitFunCall(ImpParser.FunCallContext ctx) {\n        String id = ctx.ID().getText();\n\n        // check if the function was declared\n        if (!conf.containsFunction(id)) {\n            System.err.println(\"Function \" + id + \" used but never declared\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n\n            System.exit(1);\n        }\n\n        Conf.FunctionContext functionContext = conf.getFunction(id);\n\n        // copy the arguments\n        Map<String, ExpValue<?>> args = functionContext.getArgs();\n        Map<String, ExpValue<?>> argsCopy = new HashMap<>();\n        for (String key : args.keySet()) {\n            argsCopy.put(key, args.get(key));\n        }\n\n        // check if the number of arguments is correct\n        // System.out.println(\"args\"+ argsCopy+\"size\"+argsCopy.size());\n        // System.out.println(\"exp\"+ctx.exp()+\"size\"+ctx.exp().size());\n        if (argsCopy.size() != ctx.exp().size()) {\n            System.err.println(\"Function \" + id + \" called with the wrong number of arguments\");\n            System.err.println(\"@\" + ctx.start.getLine() + \":\" + ctx.start.getCharPositionInLine());\n\n            System.exit(1);\n        }\n\n        // evaluate the arguments\n        for (int i = 0; i < ctx.exp().size(); i++) {\n            String argId = argsCopy.keySet().toArray()[i].toString();\n            ExpValue<?> argValue = visitExp(ctx.exp(i));\n            argsCopy.put(argId, argValue);\n        }\n\n        if (openContexts.contains(id)) {\n            // let's loop through the context to find the last name of the function, and add _rec to it\n            String newId = id;\n            for (int i = 0; i < openContexts.size(); i++) {\n                String current_context = openContexts.get(i);\n                if (current_context.contains(\"!\")) {\n                    if (current_context.split(\"!\")[0].equals(id)) {\n                        newId = current_context;\n                    }\n                }\n            }\n            openContexts.addLast(newId + \"!\");\n        }\n        else {\n            openContexts.addLast(id); // push the function name to the context\n        }\n\n        conf.updateContext(openContexts.getLast(), argsCopy); // update the context with the arguments\n\n        visitCom(functionContext.getCtx().com());\n        ExpValue ret = visitExp(functionContext.getCtx().exp());\n        openContexts.pollLast();\n        return ret;\n    }\n\n    //------------------------------------------------------------------------------------------------\n\n    @Override public T visitArnc(ImpParser.ArncContext ctx) {\n        return visitChildren(ctx);\n    }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncPrint(ImpParser.ArncPrintContext ctx) {\n        System.out.println(visitExp(ctx.arncExp()));\n        return ComValue.INSTANCE;\n    }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncGlobalDeclaration(ImpParser.ArncGlobalDeclarationContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncAssign(ImpParser.ArncAssignContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncIf(ImpParser.ArncIfContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncWhile(ImpParser.ArncWhileContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncNat(ImpParser.ArncNatContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncFloat(ImpParser.ArncFloatContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncBool(ImpParser.ArncBoolContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncString(ImpParser.ArncStringContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncParExp(ImpParser.ArncParExpContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) { return 0 }\n\n    @Override public NatValue visitArncValone(ImpParser.ArncValoneContext ctx) { return 1; }\n\n    @Override public T visitArncId(ImpParser.ArncIdContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override public T visitArncFunCall(ImpParser.ArncFunCallContext ctx) { return visitChildren(ctx); }\n    /**\n     * {@inheritDoc}\n     *\n     * <p>The default implementation returns the result of calling\n     * {@link #visitChildren} on {@code ctx}.</p>\n     */\n    @Override\n    public NatValue visitArncCalcOp(ImpParser.ArncCalcOpContext ctx) {\n        int operand = visitNatExp(ctx.arncExp(0));\n        int stackValue = 1; //TODO: make a stack for BaseOp\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.ARNC_PLUS -> new NatValue(stackValue + operand);\n            case ImpParser.ARNC_MINUS -> new NatValue(stackValue - operand);\n            case ImpParser.ARNC_DIV -> new NatValue(stackValue * operand);\n            case ImpParser.ARNC_MUL -> new NatValue(stackValue / operand);\n            default -> null;\n        };\n    }\n\n    @Override\n    public BoolValue visitArncLogOp(ImpParser.ArncLogOpContext ctx) {\n        boolean operand = visitNatExp(ctx.arncExp(0));\n        boolean stackValue = 1; //TODO: make a stack for BaseOp\n\n        return switch (ctx.op.getType()) {\n            case ImpParser.ARNC_EQUAL -> new BoolValue(stackValue == operand);\n            case ImpParser.ARNC_GRATER -> new BoolValue(stackValue > operand);\n            case ImpParser.ARNC_OR -> new BoolValue(stackValue | operand);\n            case ImpParser.ARNC_AND -> new BoolValue(stackValue & operand);\n            default -> null;\n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/HaveFun/src/IntImp.java b/HaveFun/src/IntImp.java
+--- a/HaveFun/src/IntImp.java	(revision e560fc31b05239b82424510c04848a5634aeae77)
++++ b/HaveFun/src/IntImp.java	(date 1686847472530)
+@@ -372,15 +372,13 @@
+ 
+     //------------------------------------------------------------------------------------------------
+ 
++
++
+     @Override public T visitArnc(ImpParser.ArncContext ctx) {
++
+         return visitChildren(ctx);
+     }
+-    /**
+-     * {@inheritDoc}
+-     *
+-     * <p>The default implementation returns the result of calling
+-     * {@link #visitChildren} on {@code ctx}.</p>
+-     */
++
+     @Override public T visitArncPrint(ImpParser.ArncPrintContext ctx) {
+         System.out.println(visitExp(ctx.arncExp()));
+         return ComValue.INSTANCE;
+Index: HaveFun/out/production/HaveFun/Imp.g4
+===================================================================
+diff --git a/HaveFun/out/production/HaveFun/Imp.g4 b/HaveFun/out/production/HaveFun/Imp.g4
+deleted file mode 100644
+--- a/HaveFun/out/production/HaveFun/Imp.g4	(revision e560fc31b05239b82424510c04848a5634aeae77)
++++ /dev/null	(revision e560fc31b05239b82424510c04848a5634aeae77)
+@@ -1,170 +0,0 @@
+-grammar Imp;
+-
+-prog : fun* com EOF ;
+-
+-fun: INITFUN ID LPAR vars RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
+-
+-vars: ID* (COMMA ID)* |;
+-
+-com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
+-    | ID ASSIGN exp                                                     # assign
+-    | GLOBAL ID ASSIGN exp                                              # newGlobalAssign
+-    | ID GL ASSIGN exp                                                  # globalAssign
+-    | SKIPP                                                             # skip
+-    | com SEMICOLON com                                                 # seq
+-    | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
+-    | ARNC_INIT arnc ARNC_END                                           # arnoldC
+-    | OUT LPAR exp RPAR                                                 # out
+-    | LBRACE com RBRACE ND LBRACE com RBRACE                            # nonDet
+-    ;
+-
+-exp : NAT                                 # nat
+-    | BOOL                                # bool
+-    | LPAR exp RPAR                       # parExp
+-    | <assoc=right> exp POW exp           # pow
+-    | NOT exp                             # not
+-    | exp op=(DIV | MUL | MOD) exp        # divMulMod
+-    | exp op=(PLUS | MINUS) exp           # plusMinus
+-    | exp op=(LT | LEQ | GEQ | GT) exp    # cmpExp
+-    | exp op=(EQQ | NEQ) exp              # eqExp
+-    | exp op=(AND | OR) exp               # logicExp
+-    | ID LPAR exp* (COMMA exp)* RPAR      # funCall
+-    | ID                                  # id
+-    | ID GL                               # globalId
+-    ;
+-
+-arnc : ARNC_SHOWTIME (stat)* ARNC_TERM;
+-
+-stat : ARNC_PRINT arnc_exp                                                  # arnc_print
+-     | ARNC_DECL ID ARNC_VARSET arnc_exp                                    # arnc_declaration
+-     | ARNC_DECL GLOBAL ID ARNC_VARSET arnc_exp                             # arnc_globalDeclaration
+-     | ARNC_ASSIGN ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END             # arnc_assign
+-     | ARNC_ASSIGN GL ID ARNC_OP_BASE arnc_exp arnc_op ARNC_OP_END          # arnc_globalAssign
+-     | ARNC_IF arnc_exp stat (ARNC_ELSE arnc_exp)* ARNC_ENDIF            # arnc_if
+-     | ARNC_WHILE arnc_exp (stat)* ARNC_WHEND                               # arnc_while
+-     ;
+-
+-arnc_exp : NAT                                          # arnc_nat
+-         | FLOAT                                        # arnc_float
+-         | BOOL                                         # arnc_bool
+-         | STRING                                       # arnc_string
+-         | LPAR arnc_exp RPAR                           # arnc_parExp
+-         | <assoc=right> arnc_exp POW arnc_exp          # arnc_pow
+-         | NOT arnc_exp                                 # arnc_not
+-         | arnc_exp op=(DIV | MUL | MOD) arnc_exp       # arnc_divMulMod
+-         | arnc_exp op=(PLUS | MINUS) arnc_exp          # arnc_plusMinus
+-         | arnc_exp op=(LT | LEQ | GEQ | GT) arnc_exp   # arnc_cmpExp
+-         | arnc_exp op=(EQQ | NEQ) arnc_exp             # arnc_eqExp
+-         | arnc_exp op=(AND | OR) arnc_exp              # arnc_logicExp
+-         | ID                                           # arnc_id
+-         | ID GL                                        # arnc_globalId
+-         | ID LPAR exp* RPAR                            # arnc_funCall
+-         | ARNC_VALONE                                  # arnc_valzero
+-         | ARNC_VALZERO                                 # arnc_valone
+-         ;
+-//TODO : per ora ho solo copiato per testare, probabilmente va bene ma devo controllare se servono tutte le operazioni
+-
+-arnc_op : ARNC_PLUS arnc_exp                            # arnc_plus
+-        | ARNC_MINUS arnc_exp                           # arnc_minus
+-        | ARNC_MUL arnc_exp                             # arnc_mul
+-        | ARNC_DIV arnc_exp                             # arnc_div
+-        | ARNC_EQUAL arnc_exp                           # arnc_equ
+-        | ARNC_GRATER arnc_exp                          # arnc_gt
+-        | ARNC_OR arnc_exp                              # arnc_or
+-        | ARNC_AND arnc_exp                             # arnc_and
+-        ;
+-
+-//TODO : implementare @NO PROBLEMO e @I LIED come valori costanti
+-
+-INITFUN: 'fun';
+-RETURN: 'return';
+-
+-GLOBAL: 'global';
+-
+-GL: '.g';
+-ND: 'nd';
+-
+-NAT : '0' | [1-9][0-9]* ;
+-INT    : NAT | '-' POS;
+-FLOAT   : INT | (INT | '-' '0') '.' DIGIT+;
+-fragment POS    : POSDIGIT DIGIT*;
+-fragment DIGIT  : '0' | POSDIGIT;
+-fragment POSDIGIT   : [1-9];
+-STRING : '"' STRCHR* '"' ;
+-fragment STRCHR : ~["\\\r\n] | ESC ;
+-fragment ESC    : '\\' [btnfr"'\\] ;
+-BOOL : 'true' | 'false' ;
+-
+-PLUS  : '+' ;
+-MINUS : '-';
+-MUL   : '*' ;
+-DIV   : '/' ;
+-MOD   : 'mod' ;
+-POW   : '^' ;
+-
+-AND : '&' ;
+-OR  : '|' ;
+-
+-EQQ : '==' ;
+-NEQ : '!=' ;
+-LEQ : '<=' ;
+-GEQ : '>=' ;
+-LT  : '<' ;
+-GT  : '>' ;
+-NOT : '!' ;
+-
+-IF     : 'if' ;
+-THEN   : 'then' ;
+-ELSE   : 'else' ;
+-WHILE  : 'while' ;
+-SKIPP  : 'skip' ;
+-ASSIGN : '=' ;
+-OUT    : 'out' ;
+-
+-LPAR      : '(' ;
+-RPAR      : ')';
+-LBRACE    : '{' ;
+-RBRACE    : '}' ;
+-SEMICOLON : ';' ;
+-
+-COMMA : ',' ;
+-
+-ARNC_INIT : '${' ;
+-ARNC_END  : '}$' ;
+-
+-ARNC_SHOWTIME : 'IT\'S SHOWTIME';                   //main begin
+-ARNC_TERM : 'YOU HAVE BEEN TERMINATED';             //main end
+-ARNC_PRINT : 'TALK TO THE HAND';                    //print string or var
+-ARNC_DECL : 'HEY CHRISTMAS TREE';                   //VAR DECLARATION --> HEY CHRISTMAS TREE variablename
+-ARNC_VARSET : 'YOU SET US UP';                      //VAR SETTING --> YOU SET US UP initialvalue
+-
+-ARNC_ASSIGN : 'GET TO THE CHOPPER';                 //OP VAR ASSIGNMENT --> GET TO THE CHOPPER myvaR
+-ARNC_OP_BASE : 'HERE IS MY INVITATION';             //OP SET STACK TOP --> HERE IS MY INVITATION firstOperand
+-ARNC_PLUS : 'GET UP';
+-ARNC_MINUS : 'GET DOWN';
+-ARNC_MUL : 'YOU\'RE FIRED';
+-ARNC_DIV : 'HE HAD TO SPLIT';
+-ARNC_OP_END : 'ENOUGH TALK';
+-
+-ARNC_EQUAL : 'YOU ARE NOT YOU YOU ARE ME';          //LOGICAL EQUAL TO --> YOU ARE NOT YOU YOU ARE ME operand
+-ARNC_GRATER : 'LET OFF SOME STEAM BENNET';          //LOGICAL GRATER THAN --> LET OFF SOME STEAM BENNET operand
+-ARNC_OR : 'CONSIDER THAT A DIVORCE';                //LOGICAL OR --> CONSIDER THAT A DIVORCE operand
+-ARNC_AND : 'KNOCK KNOCK';                           //LOGICAL AND --> KNOCK KNOCK operand
+-
+-ARNC_IF : 'BECAUSE I\'M GOING TO SAY PLEASE';       //CONDITIONAL IF --> BECAUSE I'M GOING TO SAY PLEASE value
+-                                                    //[statements]
+-ARNC_ELSE : 'BULLSHIT';                             //ELSE
+-                                                    //[statements]
+-ARNC_ENDIF : 'YOU HAVE NO RESPECT FOR LOGIC';       //IF END
+-
+-ARNC_WHILE : 'STICK AROUND';                        //WHILE LOOP --> STICK AROUND value
+-                                                    //[statements]
+-ARNC_WHEND : 'CHILL';                               //WHILE END
+-
+-ARNC_VALZERO : '@I LIED';                           //VALUE 0
+-ARNC_VALONE : '@NO PROBLEMO';                       //VALUE 1
+-
+-ID : [A-Za-z]+[A-Za-z0-9]* ;
+-//TODO : nomi variabili con cifre
+-
+-WS : [ \t\r\n]+ -> skip ;
+Index: HaveFun/out/production/HaveFun/prog
+===================================================================
+diff --git a/HaveFun/out/production/HaveFun/prog b/HaveFun/out/production/HaveFun/prog
+deleted file mode 100644
+--- a/HaveFun/out/production/HaveFun/prog	(revision e560fc31b05239b82424510c04848a5634aeae77)
++++ /dev/null	(revision e560fc31b05239b82424510c04848a5634aeae77)
+@@ -1,3 +0,0 @@
+-fun f(x, y) { return 1 }
+-
+-out(1)
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"f8b2469a-ec8d-459a-94e9-3170f0fc2cde\" name=\"Changes\" comment=\"compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/HaveFun/src/Imp.g4\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/HaveFun/src/Imp.g4\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/HaveFun/src/IntImp.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/HaveFun/src/IntImp.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitSEFilterConfiguration\">\n    <file-type-list>\n      <filtered-out-file-type name=\"LOCAL_BRANCH\" />\n      <filtered-out-file-type name=\"REMOTE_BRANCH\" />\n      <filtered-out-file-type name=\"TAG\" />\n      <filtered-out-file-type name=\"COMMIT_BY_MESSAGE\" />\n    </file-type-list>\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProjectId\" id=\"2Ndo8NpSlx0JrZ0XQpaBvKEfrjQ\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\n    \"last_opened_file_path\": \"/home/leo/Documenti/GitHub/Linguaggi/HaveFun/src\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"C:\\Users\\leona\\Documents\\GitHub\\Linguaggi\\hw03\\src\" />\n    </key>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"f8b2469a-ec8d-459a-94e9-3170f0fc2cde\" name=\"Changes\" comment=\"\" />\n      <created>1680003159147</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1680003159147</updated>\n      <workItem from=\"1680549593353\" duration=\"1728000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"Changes\">\n      <created>1686579238971</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1686579238971</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"Changes\">\n      <created>1686581480691</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1686581480691</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"Changes\">\n      <created>1686582293300</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1686582293300</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"Changes\">\n      <created>1686582379812</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1686582379812</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"Changes\">\n      <created>1686609722187</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1686609722187</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc\">\n      <created>1686777542491</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1686777542491</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"7\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"Changes\" />\n    <MESSAGE value=\"compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision e560fc31b05239b82424510c04848a5634aeae77)
++++ b/.idea/workspace.xml	(date 1686847431701)
+@@ -4,8 +4,91 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f8b2469a-ec8d-459a-94e9-3170f0fc2cde" name="Changes" comment="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc">
++    <list default="true" id="f8b2469a-ec8d-459a-94e9-3170f0fc2cde" name="Changes" comment="implementato costante 1 e 0, operazioni di calcolo e logiche">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/Conf$FunctionContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/Conf.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/Imp.g4" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/Imp.interp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/Imp.tokens" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpBaseVisitor.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpLexer.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpLexer.interp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpLexer.tokens" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$ArncContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_andContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_assignContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_boolContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_cmpExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_declarationContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_divContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_divMulModContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_eqExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_equContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_expContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_floatContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_funCallContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_globalAssignContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_globalDeclarationContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_globalIdContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_gtContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_idContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_ifContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_logicExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_minusContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_mulContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_natContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_notContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_opContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_orContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_parExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_plusContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_plusMinusContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_powContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_printContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_stringContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_valoneContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_valzeroContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$Arnc_whileContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$ArnoldCContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$AssignContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$BoolContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$CmpExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$ComContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$DivMulModContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$EqExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$ExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$FunCallContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$FunContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$GlobalAssignContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$GlobalIdContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$IdContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$IfContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$LogicExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$NatContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$NewGlobalAssignContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$NonDetContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$NotContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$OutContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$ParExpContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$PlusMinusContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$PowContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$ProgContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$SeqContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$SkipContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$StatContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$VarsContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser$WhileContext.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpParser.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/ImpVisitor.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/IntImp.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/Main.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/prog" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/value/BoolValue.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/value/ComValue.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/value/ExpValue.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/value/NatValue.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/HaveFun/out/production/HaveFun/value/Value.class" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/HaveFun/src/Imp.g4" beforeDir="false" afterPath="$PROJECT_DIR$/HaveFun/src/Imp.g4" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/HaveFun/src/IntImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/HaveFun/src/IntImp.java" afterDir="false" />
+     </list>
+@@ -39,7 +122,7 @@
+     "RunOnceActivity.OpenProjectViewOnStart": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "last_opened_file_path": "/home/leo/Documenti/GitHub/Linguaggi/HaveFun/src"
++    "last_opened_file_path": "/home/leo/Documenti/Impext/src"
+   }
+ }]]></component>
+   <component name="RecentsManager">
+@@ -99,7 +182,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1686777542491</updated>
+     </task>
+-    <option name="localTasksCounter" value="7" />
++    <task id="LOCAL-00007" summary="implementato costante 1 e 0, operazioni di calcolo e logiche">
++      <created>1686779821034</created>
++      <option name="number" value="00007" />
++      <option name="presentableId" value="LOCAL-00007" />
++      <option name="project" value="LOCAL" />
++      <updated>1686779821034</updated>
++    </task>
++    <option name="localTasksCounter" value="8" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -119,6 +209,7 @@
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="Changes" />
+     <MESSAGE value="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc" />
+-    <option name="LAST_COMMIT_MESSAGE" value="compattato alcune operazioni della grammatica di arnold e ricreato i file Visiotr,Lexer,ecc" />
++    <MESSAGE value="implementato costante 1 e 0, operazioni di calcolo e logiche" />
++    <option name="LAST_COMMIT_MESSAGE" value="implementato costante 1 e 0, operazioni di calcolo e logiche" />
+   </component>
+ </project>
+\ No newline at end of file
