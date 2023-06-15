@@ -188,60 +188,54 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitId(ImpParser.IdContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ImpParser#arnc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArnc(ImpParser.ArncContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code arncPrint}
-	 * labeled alternative in {@link ImpParser#stat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncPrint(ImpParser.ArncPrintContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arncDeclaration}
-	 * labeled alternative in {@link ImpParser#stat}.
+	 * labeled alternative in {@link ImpParser#arncCom}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArncDeclaration(ImpParser.ArncDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arncGlobalDeclaration}
-	 * labeled alternative in {@link ImpParser#stat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncGlobalDeclaration(ImpParser.ArncGlobalDeclarationContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code arncAssign}
-	 * labeled alternative in {@link ImpParser#stat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncAssign(ImpParser.ArncAssignContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code arncGlobalAssign}
-	 * labeled alternative in {@link ImpParser#stat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arncIf}
-	 * labeled alternative in {@link ImpParser#stat}.
+	 * labeled alternative in {@link ImpParser#arncCom}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArncIf(ImpParser.ArncIfContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncWhile}
-	 * labeled alternative in {@link ImpParser#stat}.
+	 * labeled alternative in {@link ImpParser#arncCom}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArncWhile(ImpParser.ArncWhileContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncSeq}
+	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncSeq(ImpParser.ArncSeqContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncPrint}
+	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncPrint(ImpParser.ArncPrintContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncAssign}
+	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncAssign(ImpParser.ArncAssignContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncGlobalAssign}
+	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncNat}
 	 * labeled alternative in {@link ImpParser#arncExp}.
