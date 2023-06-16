@@ -60,7 +60,6 @@ arncExp : NAT                                                       # arncNat
          | ARNC_VALONE                                              # arncValzero
          | ARNC_VALZERO                                             # arncValone
          | ID                                                       # arncId
-         | ID GL                                                    # arncGlobalId
          | ID LPAR arncExp* RPAR                                    # arncFunCall   //check if needed
          ;
 

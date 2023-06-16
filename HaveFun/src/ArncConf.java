@@ -7,10 +7,10 @@ import java.util.Map;
 public class ArncConf {
     // We need to save the context of each function call, so we can visit the function body each time it is called
     public static class FunctionContext {
-        private final ImpParser.FunContext ctx;
+        private final ImpParser.ArncMethodContext ctx;
         private final Map<String, ExpValue<?>> args;
 
-        public FunctionContext(ImpParser.FunContext ctx, Map<String, ExpValue<?>> args) {
+        public FunctionContext(ImpParser.ArncMethodContext ctx, Map<String, ExpValue<?>> args) {
             this.ctx = ctx;
             this.args = args;
         }
@@ -19,7 +19,7 @@ public class ArncConf {
             return args;
         }
 
-        public ImpParser.FunContext getCtx() {
+        public ImpParser.ArncMethodContext getCtx() {
             return ctx;
         }
 

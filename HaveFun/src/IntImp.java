@@ -8,14 +8,18 @@ public class IntImp extends ImpBaseVisitor<Value> {
     private final ArncConf arncConf;
 
     private final LinkedList<String> openContexts = new LinkedList<>();
+    private final LinkedList<String> openArncContexts = new LinkedList<>();
 
     public IntImp(Conf conf) {
         this.conf = conf;
         this.arncConf = new ArncConf();
         openContexts.addLast("!general");
+        openArncContexts.addLast("!general");
         // new empty global context
         conf.updateContext("!general", new HashMap<>());
         conf.updateContext("!global", new HashMap<>());
+
+        arncConf.updateContext("!general", new HashMap<>());
     }
 
     private ComValue visitCom(ImpParser.ComContext ctx) {
@@ -331,6 +335,40 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public ExpValue<?> visitArncMethod(ImpParser.ArncMethodContext ctx) {
+        Map<String, ExpValue<?>> args = new HashMap<>();
+
+        for (int i = 1; i < ctx.ID().size(); i++) {
+            if (ctx.ID(i).getText().equals(","))
+                continue;
+            String id = ctx.ID(0).getText();
+
+            if (!args.containsKey(id)) {
+                args.put(id, new NatValue(0));
+            }
+            else {
+                System.err.println("Parameter name " + id + " clashes with previous parameters");
+                System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+                System.exit(1);
+            }
+        }
+
+        ArncConf.FunctionContext functionContext = new ArncConf.FunctionContext(ctx, args);
+
+        if(arncConf.containsFunction(ctx.ID(0).getText())){
+            System.err.println("Fun " + ctx.ID(0).getText() + " already defined");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
+            System.exit(1);
+        }
+
+        arncConf.updateFunction(ctx.ID(0).getText(), functionContext);
+
+        return new NatValue(0);
+    }
+
+
+    @Override
     public Value visitVars(ImpParser.VarsContext ctx) {
         return super.visitVars(ctx);
     }
@@ -462,16 +500,16 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public ArncComValue visitArncAssign(ImpParser.ArncAssignContext ctx) {
-        String id = '?'+ctx.ID().getText(); // we identify a arncVariable with a ? before the name
+        String id = ctx.ID().getText(); // we identify a arncVariable with a ? before the name
         ExpValue<?> v = visitArncExp(ctx.arncExp());
 
-        Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());
+        Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
         currentContext.put(id, v);
-        conf.updateContext(openContexts.getLast(), currentContext);
+        arncConf.updateContext(openArncContexts.getLast(), currentContext);
 
         // if they are linked, update the other context
-        if (arncConf.containsLinked(id, openContexts.getLast())) {
-            String linkedId = arncConf.getLinked(id, openContexts.getLast());
+        if (arncConf.containsLinked(id, openArncContexts.getLast())) {
+            String linkedId = arncConf.getLinked(id, openArncContexts.getLast());
             conf.updateGlobal(linkedId, v);
         }
 
@@ -483,18 +521,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
         String globalId = ctx.ID(0).getText();
         String localId = '?' + ctx.ID(1).getText();
 
-        Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());
+        Map<String, ExpValue<?>> currentContext = conf.getContext(openArncContexts.getLast());
         currentContext.put(localId, conf.getGlobal(globalId));
-        conf.updateContext(openContexts.getLast(), currentContext);
+        arncConf.updateContext(openArncContexts.getLast(), currentContext);
 
-        arncConf.link(localId, openContexts.getLast(), globalId);
+        arncConf.link(localId, openArncContexts.getLast(), globalId);
 
         return ArncComValue.INSTANCE;
-    }
-
-    @Override
-    public Value visitArncMethod(ImpParser.ArncMethodContext ctx) {
-        return super.visitArncMethod(ctx);
     }
 
     @Override
@@ -542,10 +575,10 @@ public class IntImp extends ImpBaseVisitor<Value> {
     //TODO : ExpValue o ArncExpValue?
     @Override
     public Value visitArncId(ImpParser.ArncIdContext ctx) {
-        String id = '?'+ctx.ID().getText(); // we identify a arncVariable with a ? before the name
+        String id = ctx.ID().getText(); // we identify a arncVariable with a ? before the name
 
         ExpValue<?> ret;
-        Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
+        Map<String, ExpValue<?>> funC = arncConf.getContext(openArncContexts.getLast());
         if (!funC.containsKey(id)) {
             System.err.println("Variable " + id + " used but never instantiated");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
@@ -558,23 +591,30 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx) {
+    public ExpValue<?> visitArncFunCall(ImpParser.ArncFunCallContext ctx) {
+        // TODO: testare, finire
         String id = ctx.ID().getText();
 
-        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
-        if (!currentContext.containsKey(id)) {
-            System.err.println("Global variable " + id + " used but never instantiated");
+        if (!arncConf.containsFunction(id)) {
+            System.err.println("Function " + id + " used but never instantiated");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
             System.exit(1);
         }
 
-        return currentContext.get(id);
-    }
+        List<ImpParser.ArncExpContext> exps = ctx.arncExp();
+        List<ExpValue<?>> expValues = new ArrayList<>();
+        for (ImpParser.ArncExpContext exp : exps) {
+            expValues.add(visitArncExp(exp));
+        }
 
-    //TODO : serve?
-    @Override
-    public Value visitArncFunCall(ImpParser.ArncFunCallContext ctx) {
-        return super.visitArncFunCall(ctx);
+        openArncContexts.addLast(id);
+
+        ExpValue<?> ret = visitArncMethod(arncConf.getFunction(id).getCtx());
+
+        openArncContexts.removeLast();
+
+        return ret;
     }
 
     @Override
