@@ -106,13 +106,17 @@ public class ArncConf {
             return (key + context).hashCode();
         }
     }
-    private Map<Tuple, ExpValue<?>> links = new HashMap<>();
+    private Map<Tuple, String> links = new HashMap<>();
 
-    public void link(String key, String context, ExpValue<?> value) {
-        links.put(new Tuple(key, context), value);
+    public void link(String key, String context, String globalKey) {
+        links.put(new Tuple(key, context), globalKey);
     }
 
-    public ExpValue<?> getLinked(String key, String context) {
+    public boolean containsLinked(String key, String context) {
+        return links.containsKey(new Tuple(key, context));
+    }
+
+    public String getLinked(String key, String context) {
         return links.get(new Tuple(key, context));
     }
 
