@@ -35,7 +35,8 @@ exp : NAT                                 # nat
     ;
 
 arncCom : ARNC_PRINT arncExp                                        # arncPrint
-     | ARNC_DECL ID arncVarAss                                      # arncDeclaration
+     | ARNC_DECL ID ARNC_VARSET arncExp                             # arncAssign
+     | ARNC_DECL ID ARNC_SLY ID GL arncExp                          # arncGlobalAssign
      | ARNC_OP_ASSIGN ID ARNC_OP_BASE arncExp (arncOp)* ARNC_OP_END # arncOpResAssign
      | ARNC_IF arncExp arncCom (ARNC_ELSE arncCom)* ARNC_ENDIF      # arncIf
      | ARNC_WHILE arncExp arncCom ARNC_WHEND                        # arncWhile
@@ -43,10 +44,6 @@ arncCom : ARNC_PRINT arncExp                                        # arncPrint
      | ARNC_CALLMET ID (arncExp)*                                   # arncMetCall
      | arncCom arncCom                                              # arncSeq
      ;
-
-arncVarAss : ARNC_VARSET arncExp                                          # arncAssign
-           | ARNC_SLY ID GL arncExp                                       # arncGlobalAssign
-           ;
 
 arncMet : ARNC_METHOD ID (ARNC_METARGS ID)* arncMetBody ARNC_METCLOSE   # arncMethod
         ;

@@ -2,7 +2,7 @@ package value;
 
 public class ArncComValue extends Value{
 
-        private static final ArncComValue INSTANCE = new ArncComValue();
+        public static final ArncComValue INSTANCE = new ArncComValue();
 
         private ArncComValue() { }
 

@@ -454,18 +454,29 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public ExpValue<?> visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) {
-        return null;
+    public ArncComValue visitArncAssign(ImpParser.ArncAssignContext ctx) {
+        String id = ctx.ID().getText();
+        ExpValue<?> v = visitArncExp(ctx.arncExp());
+
+        Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());
+        currentContext.put(id, v);
+        conf.updateContext(openContexts.getLast(), currentContext);
+
+        return ArncComValue.INSTANCE;
     }
 
     @Override
-    public ExpValue<?> visitArncAssign(ImpParser.ArncAssignContext ctx) {
-        return null;
-    }
+    public ArncComValue visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
+        String globalId = ctx.ID(0).getText();
+        //dalla descrizione di SLY sembra accettare solo variabili, non formule o valori
+        String localId = ctx.ID(1).getText();
+        ExpValue<?> v = visitArncExp(ctx.arncExp());
 
-    @Override
-    public ExpValue<?> visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
-        return null;
+        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
+        currentContext.put(globalId, v);
+        conf.updateContext("!global", currentContext);
+
+        return ArncComValue.INSTANCE;
     }
 
     @Override
@@ -497,7 +508,12 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncWhile(ImpParser.ArncWhileContext ctx) {
-        return super.visitArncWhile(ctx);
+        if (!visitBoolArncExp(ctx.arncExp()))
+            return ArncComValue.INSTANCE;
+
+        visitArncCom(ctx.arncCom());
+
+        return visitArncWhile(ctx);
     }
 
     @Override

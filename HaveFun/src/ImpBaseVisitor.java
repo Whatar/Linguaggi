@@ -206,13 +206,6 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitArncIf(ImpParser.ArncIfContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -248,14 +241,14 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArncMetAss(ImpParser.ArncMetAssContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArncAssign(ImpParser.ArncAssignContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArncAssign(ImpParser.ArncAssignContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArncMetAss(ImpParser.ArncMetAssContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
