@@ -252,104 +252,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return ret;
     }
 
-    @Override
-    public ExpValue<?> visitArncPrint(ImpParser.ArncPrintContext ctx) {
-        System.out.println(visitArncExp(ctx.arncExp()));
-        return null;
-    }
-
-    private ExpValue<?> visitArncExp(ImpParser.ArncExpContext ctx) {
-        return (ExpValue<?>) visit(ctx);
-    }
-
-    @Override
-    public ExpValue<?> visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ExpValue<?> visitArncAssign(ImpParser.ArncAssignContext ctx) {
-        return null;
-    }
-
-    @Override
-    public ExpValue<?> visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
-        return null;
-    }
-
-    @Override
-    public Value visitArncIf(ImpParser.ArncIfContext ctx) {
-        return super.visitArncIf(ctx);
-    }
-
-    @Override
-    public Value visitArncWhile(ImpParser.ArncWhileContext ctx) {
-        return super.visitArncWhile(ctx);
-    }
-
-    @Override
-    public Value visitArncNat(ImpParser.ArncNatContext ctx) {
-        return super.visitArncNat(ctx);
-    }
-
-    @Override
-    public Value visitArncFloat(ImpParser.ArncFloatContext ctx) {
-        return super.visitArncFloat(ctx);
-    }
-
-    @Override
-    public BoolValue visitArncBool(ImpParser.ArncBoolContext ctx) {
-        return new BoolValue(Boolean.parseBoolean(ctx.BOOL().getText()));
-    }
-
-    @Override
-    public Value visitArncString(ImpParser.ArncStringContext ctx) {
-        return super.visitArncString(ctx);
-    }
-
-    @Override
-    public Value visitArncParExp(ImpParser.ArncParExpContext ctx) {
-        return super.visitArncParExp(ctx);
-    }
-
-    @Override
-    public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) {
-        return new NatValue(0);
-    }
-
-    @Override
-    public Value visitArncValone(ImpParser.ArncValoneContext ctx) {
-        return new NatValue(1);
-    }
-
-    @Override
-    public Value visitArncId(ImpParser.ArncIdContext ctx) {
-        return super.visitArncId(ctx);
-    }
-
-    @Override
-    public Value visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx) {
-        return super.visitArncGlobalId(ctx);
-    }
-
-    @Override
-    public Value visitArncFunCall(ImpParser.ArncFunCallContext ctx) {
-        return super.visitArncFunCall(ctx);
-    }
-
-    @Override
-    public Value visitArncCalcOp(ImpParser.ArncCalcOpContext ctx) {
-        return super.visitArncCalcOp(ctx);
-    }
-
-    @Override
-    public Value visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
-        //boolean stackTop = false;
-        //ExpValue<?>  left = visitArncBool(ctx.arncExp());
-
-        return null;
-    }
-
     public ExpValue<?>  visitGlobalId(ImpParser.GlobalIdContext ctx) {
         String id = ctx.ID().getText();
 
@@ -491,6 +393,226 @@ public class IntImp extends ImpBaseVisitor<Value> {
         ExpValue<?> ret = visitExp(functionContext.getCtx().exp());
         openContexts.pollLast();
         return ret;
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public ExpValue<?> visitArncPrint(ImpParser.ArncPrintContext ctx) {
+        System.out.println(visitArncExp(ctx.arncExp()));
+        return null;
+    }
+
+    @Override
+    public Value visitArncMetAss(ImpParser.ArncMetAssContext ctx) {
+        return super.visitArncMetAss(ctx);
+    }
+
+    private ComValue visitArncCom(ImpParser.ArncComContext ctx) {
+        if (ctx == null){
+            return null;
+        }
+        else {
+            return (ComValue) visit(ctx);
+        }
+    }
+
+    private ExpValue<?> visitArncExp(ImpParser.ArncExpContext ctx) {
+        return (ExpValue<?>) visit(ctx);
+    }
+
+    private int visitNatArncExp(ImpParser.ArncExpContext ctx) {
+        try {
+            return ((NatValue) visitArncExp(ctx)).toJavaValue();
+        } catch (ClassCastException e) {
+            System.err.println("Type mismatch exception!");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
+            System.err.println(ctx.getText());
+            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
+            System.err.println("> Natural expression expected.");
+            System.exit(1);
+        }
+
+        return 0; // unreachable code
+    }
+
+    private boolean visitBoolArncExp(ImpParser.ArncExpContext ctx) {
+        try {
+            return ((BoolValue) visitArncExp(ctx)).toJavaValue();
+        } catch (ClassCastException e) {
+            System.err.println("Type mismatch exception!");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
+            System.err.println(ctx.getText());
+            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
+            System.err.println("> Boolean expression expected.");
+            System.exit(1);
+        }
+
+        return false; // unreachable code
+    }
+
+    @Override
+    public ExpValue<?> visitArncDeclaration(ImpParser.ArncDeclarationContext ctx) {
+        return null;
+    }
+
+    @Override
+    public ExpValue<?> visitArncAssign(ImpParser.ArncAssignContext ctx) {
+        return null;
+    }
+
+    @Override
+    public ExpValue<?> visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
+        return null;
+    }
+
+    @Override
+    public Value visitArncMethod(ImpParser.ArncMethodContext ctx) {
+        return super.visitArncMethod(ctx);
+    }
+
+    @Override
+    public Value visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) {
+        return super.visitArncMetNonVoid(ctx);
+    }
+
+    @Override
+    public Value visitArncMetVoid(ImpParser.ArncMetVoidContext ctx) {
+        return super.visitArncMetVoid(ctx);
+    }
+
+    @Override
+    public Value visitArncIf(ImpParser.ArncIfContext ctx) {
+        return visitBoolArncExp(ctx.arncExp())
+                ? visitArncCom(ctx.arncCom(0))
+                : visitArncCom(ctx.arncCom(1));
+    }
+
+    @Override
+    public Value visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx) {
+        return super.visitArncOpResAssign(ctx);
+    }
+
+    @Override
+    public Value visitArncWhile(ImpParser.ArncWhileContext ctx) {
+        return super.visitArncWhile(ctx);
+    }
+
+    @Override
+    public Value visitArncSeq(ImpParser.ArncSeqContext ctx) {
+        visitArncCom(ctx.arncCom(0));
+        return visitArncCom(ctx.arncCom(1));
+    }
+
+    @Override
+    public Value visitArncValone(ImpParser.ArncValoneContext ctx) {
+        return new NatValue(1);
+    }
+
+    @Override
+    public Value visitArncId(ImpParser.ArncIdContext ctx) {
+        return super.visitArncId(ctx);
+    }
+
+    @Override
+    public Value visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx) {
+        return super.visitArncGlobalId(ctx);
+    }
+
+    @Override
+    public Value visitArncFunCall(ImpParser.ArncFunCallContext ctx) {
+        return super.visitArncFunCall(ctx);
+    }
+
+    @Override
+    public Value visitArncNat(ImpParser.ArncNatContext ctx) {
+        return new NatValue(Integer.parseInt(ctx.NAT().getText()));
+    }
+
+    @Override
+    public Value visitArncFloat(ImpParser.ArncFloatContext ctx) {
+        return new FloatValue(Float.parseFloat(ctx.FLOAT().getText()));
+    }
+
+    @Override
+    public BoolValue visitArncBool(ImpParser.ArncBoolContext ctx) {
+        return new BoolValue(Boolean.parseBoolean(ctx.BOOL().getText()));
+    }
+
+    @Override
+    public Value visitArncString(ImpParser.ArncStringContext ctx) {
+        return new StringValue((ctx.STRING().getText()));
+    }
+
+    @Override
+    public Value visitArncParExp(ImpParser.ArncParExpContext ctx) {
+        return visitArncExp(ctx.arncExp());
+    }
+
+    @Override
+    public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) {
+        return new NatValue(0);
+    }
+
+    @Override
+    public Value visitArncDivMul(ImpParser.ArncDivMulContext ctx) {
+        int stackTop = 0;
+        int operand = visitNatArncExp(ctx.arncExp());
+
+        //TODO : SUPPORTO PER I FLOAT?
+
+        return switch (ctx.aop.getType()) {
+            case ImpParser.ARNC_DIV -> new NatValue(stackTop / operand);
+            case ImpParser.ARNC_MUL -> new NatValue(stackTop * operand);
+            default -> null;
+        };
+    }
+
+    @Override
+    public Value visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx) {
+        int stackTop = 0;
+        int operand = visitNatArncExp(ctx.arncExp());
+
+        //TODO : SUPPORTO PER I FLOAT?
+
+        return switch (ctx.aop.getType()) {
+            case ImpParser.ARNC_PLUS -> new NatValue(stackTop + operand);
+            case ImpParser.ARNC_MINUS -> new NatValue(stackTop - operand);
+            default -> null;
+        };
+    }
+
+    @Override
+    public Value visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
+        return super.visitArncMetCall(ctx);
+    }
+
+    @Override
+    public Value visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
+        int stackTop = 0;
+        int operand = visitNatArncExp(ctx.arncExp());
+
+        //TODO : SUPPORTO PER I FLOAT?
+
+        return switch (ctx.aop.getType()) {
+            case ImpParser.ARNC_EQUAL -> new BoolValue(stackTop == operand);
+            case ImpParser.ARNC_GRATER -> new BoolValue(stackTop > operand);
+            default -> null;
+        };
+    }
+
+    @Override
+    public Value visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
+        boolean stackTop = false;
+        boolean operand = visitBoolArncExp(ctx.arncExp());
+
+        return switch (ctx.aop.getType()) {
+            case ImpParser.AND -> new BoolValue(stackTop && operand);
+            case ImpParser.OR -> new BoolValue(stackTop || operand);
+            default -> null;
+        };
     }
 
 }

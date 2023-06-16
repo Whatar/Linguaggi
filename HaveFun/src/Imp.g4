@@ -36,8 +36,8 @@ exp : NAT                                 # nat
 
 arncCom : ARNC_PRINT arncExp                                        # arncPrint
      | ARNC_DECL ID arncVarAss                                      # arncDeclaration
-     | ARNC_ASSIGN ID ARNC_OP_BASE arncExp (arncOp)* ARNC_OP_END    # arncOpResAssign
-     | ARNC_IF arncExp arncCom (ARNC_ELSE arncExp)* ARNC_ENDIF      # arncIf
+     | ARNC_OP_ASSIGN ID ARNC_OP_BASE arncExp (arncOp)* ARNC_OP_END # arncOpResAssign
+     | ARNC_IF arncExp arncCom (ARNC_ELSE arncCom)* ARNC_ENDIF      # arncIf
      | ARNC_WHILE arncExp arncCom ARNC_WHEND                        # arncWhile
      | ARNC_METASSIGN ID arncCom                                    # arncMetAss
      | ARNC_CALLMET ID (arncExp)*                                   # arncMetCall
@@ -67,10 +67,11 @@ arncExp : NAT                                                       # arncNat
          | ID LPAR arncExp* RPAR                                    # arncFunCall   //check if needed
          ;
 
-arncOp : (ARNC_MUL | ARNC_DIV | ARNC_PLUS | ARNC_MINUS) arncExp     # arncCalcOp
-         | (ARNC_EQUAL | ARNC_GRATER) arncExp                       # arncCmpOp
-         | (ARNC_OR | ARNC_AND) arncExp                             # arncLogOp
-         ;
+arncOp : aop = (ARNC_DIV | ARNC_MUL) arncExp                            # arncDivMul
+        | aop = (ARNC_PLUS | ARNC_MINUS) arncExp                        # arncPlusMinus
+        | aop = (ARNC_EQUAL | ARNC_GRATER) arncExp                      # arncCmpOp
+        | aop = (ARNC_OR | ARNC_AND) arncExp                            # arncLogOp
+        ;
 
 INITFUN: 'fun';
 RETURN: 'return';
@@ -135,7 +136,7 @@ ARNC_DECL : 'HEY CHRISTMAS TREE';                   //VAR DECLARATION --> HEY CH
 ARNC_VARSET : 'YOU SET US UP';                      //VAR SETTING --> YOU SET US UP initialvalue
 ARNC_SLY: 'ARNOLD OR SLY';                          //GLOBAL VAR ASSIGNMENT --> ARNOLD OR SLY globalvar var
 
-ARNC_ASSIGN : 'GET TO THE CHOPPER';                 //OP VAR ASSIGNMENT --> GET TO THE CHOPPER myvaR
+ARNC_OP_ASSIGN : 'GET TO THE CHOPPER';              //OP VAR ASSIGNMENT --> GET TO THE CHOPPER myvaR
 ARNC_OP_BASE : 'HERE IS MY INVITATION';             //OP SET STACK TOP --> HERE IS MY INVITATION firstOperand
 ARNC_PLUS : 'GET UP';
 ARNC_MINUS : 'GET DOWN';

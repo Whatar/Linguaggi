@@ -1,4 +1,4 @@
-// Generated from C:/Users/leona/Documents/Github/Linguaggi/HaveFun/src\Imp.g4 by ANTLR 4.12.0
+// Generated from java-escape by ANTLR 4.11.1
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -188,6 +188,13 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitId(ImpParser.IdContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code arncMetCall}
+	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncMetCall(ImpParser.ArncMetCallContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code arncDeclaration}
 	 * labeled alternative in {@link ImpParser#arncCom}.
 	 * @param ctx the parse tree
@@ -201,6 +208,13 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArncIf(ImpParser.ArncIfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncOpResAssign}
+	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncWhile}
 	 * labeled alternative in {@link ImpParser#arncCom}.
@@ -223,19 +237,47 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArncPrint(ImpParser.ArncPrintContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arncAssign}
+	 * Visit a parse tree produced by the {@code arncMetAss}
 	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncMetAss(ImpParser.ArncMetAssContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncAssign}
+	 * labeled alternative in {@link ImpParser#arncVarAss}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArncAssign(ImpParser.ArncAssignContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncGlobalAssign}
-	 * labeled alternative in {@link ImpParser#arncCom}.
+	 * labeled alternative in {@link ImpParser#arncVarAss}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncMethod}
+	 * labeled alternative in {@link ImpParser#arncMet}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncMethod(ImpParser.ArncMethodContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncMetNonVoid}
+	 * labeled alternative in {@link ImpParser#arncMetBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncMetVoid}
+	 * labeled alternative in {@link ImpParser#arncMetBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncMetVoid(ImpParser.ArncMetVoidContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncNat}
 	 * labeled alternative in {@link ImpParser#arncExp}.
@@ -307,12 +349,26 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArncFunCall(ImpParser.ArncFunCallContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arncCalcOp}
+	 * Visit a parse tree produced by the {@code arncDivMul}
 	 * labeled alternative in {@link ImpParser#arncOp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArncCalcOp(ImpParser.ArncCalcOpContext ctx);
+	T visitArncDivMul(ImpParser.ArncDivMulContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncPlusMinus}
+	 * labeled alternative in {@link ImpParser#arncOp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncCmpOp}
+	 * labeled alternative in {@link ImpParser#arncOp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncCmpOp(ImpParser.ArncCmpOpContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncLogOp}
 	 * labeled alternative in {@link ImpParser#arncOp}.
