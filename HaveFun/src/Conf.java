@@ -80,6 +80,10 @@ public class Conf {
         contexts.put(id, v);
     }
 
+    public void removeContext(String id) {
+        contexts.remove(id);
+    }
+
     public boolean containsFunction(String id) {
         return functions.containsKey(id);
     }
