@@ -391,7 +391,12 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         visitCom(functionContext.getCtx().com());
         ExpValue<?> ret = visitExp(functionContext.getCtx().exp());
+
+        // we need to remove the context from the conf
+        conf.removeContext(openContexts.getLast());
+
         openContexts.pollLast();
+
         return ret;
     }
 
