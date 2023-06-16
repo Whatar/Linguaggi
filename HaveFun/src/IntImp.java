@@ -408,12 +408,12 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return super.visitArncMetAss(ctx);
     }
 
-    private ComValue visitArncCom(ImpParser.ArncComContext ctx) {
+    private ArncComValue visitArncCom(ImpParser.ArncComContext ctx) {
         if (ctx == null){
             return null;
         }
         else {
-            return (ComValue) visit(ctx);
+            return (ArncComValue) visit(ctx);
         }
     }
 
@@ -503,6 +503,10 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx) {
+        String myVar = ctx.ID().getText();
+        ExpValue<?> stackvalue = visitArncExp(ctx.arncExp());
+
+
         return super.visitArncOpResAssign(ctx);
     }
 
@@ -522,21 +526,39 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return visitArncCom(ctx.arncCom(1));
     }
 
-    @Override
-    public Value visitArncValone(ImpParser.ArncValoneContext ctx) {
-        return new NatValue(1);
-    }
-
+    //TODO : ExpValue o ArncExpValue?
     @Override
     public Value visitArncId(ImpParser.ArncIdContext ctx) {
-        return super.visitArncId(ctx);
+        String id = ctx.ID().getText();
+
+        ExpValue<?> ret;
+        Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
+        if (!funC.containsKey(id)) {
+            System.err.println("Variable " + id + " used but never instantiated");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
+            System.exit(1);
+        }
+        ret = funC.get(id);
+
+        return ret;
     }
 
     @Override
     public Value visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx) {
-        return super.visitArncGlobalId(ctx);
+        String id = ctx.ID().getText();
+
+        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
+        if (!currentContext.containsKey(id)) {
+            System.err.println("Global variable " + id + " used but never instantiated");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+            System.exit(1);
+        }
+
+        return currentContext.get(id);
     }
 
+    //TODO : serve?
     @Override
     public Value visitArncFunCall(ImpParser.ArncFunCallContext ctx) {
         return super.visitArncFunCall(ctx);
@@ -570,6 +592,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
     @Override
     public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) {
         return new NatValue(0);
+    }
+
+    @Override
+    public NatValue visitArncValone(ImpParser.ArncValoneContext ctx) {
+        return new NatValue(1);
     }
 
     @Override

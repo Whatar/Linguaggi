@@ -1,4 +1,20 @@
 
-fun y(y, k) {
-    a = 2
-}
+fun AnnaKarenina(){
+	${
+	IT'S SHOWTIME
+	  HEY CHRISTMAS TREE a
+	  YOU SET US UP 0.0
+	  HEY CHRISTMAS TREE b
+	  YOU SET US UP 17.4
+	  GET TO THE CHOPPER a
+	  HERE IS MY INVITATION 4.0
+	  GET UP b
+	  YOU'RE FIRED b
+	  ENOUGH TALK
+	  TALK TO THE HAND b
+	YOU HAVE BEEN TERMINATED
+	}$;
+	return 42
+	}
+
+out(AnnaKarenina())
