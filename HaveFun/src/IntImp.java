@@ -421,9 +421,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return (ExpValue<?>) visit(ctx);
     }
 
-    private int visitNatArncExp(ImpParser.ArncExpContext ctx) {
+    private float visitFloatArncExp(ImpParser.ArncExpContext ctx) {
         try {
-            return ((NatValue) visitArncExp(ctx)).toJavaValue();
+            return ((FloatValue) visitArncExp(ctx)).toJavaValue();
         } catch (ClassCastException e) {
             System.err.println("Type mismatch exception!");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
@@ -590,39 +590,39 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public NatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) {
-        return new NatValue(0);
+    public FloatValue visitArncValzero(ImpParser.ArncValzeroContext ctx) {
+        return new FloatValue(0f);
     }
 
     @Override
-    public NatValue visitArncValone(ImpParser.ArncValoneContext ctx) {
-        return new NatValue(1);
+    public FloatValue visitArncValone(ImpParser.ArncValoneContext ctx) {
+        return new FloatValue(1f);
     }
 
     @Override
     public Value visitArncDivMul(ImpParser.ArncDivMulContext ctx) {
-        int stackTop = 0;
-        int operand = visitNatArncExp(ctx.arncExp());
+        float stackTop = 0;
+        float operand = visitFloatArncExp(ctx.arncExp());
 
         //TODO : SUPPORTO PER I FLOAT?
 
         return switch (ctx.aop.getType()) {
-            case ImpParser.ARNC_DIV -> new NatValue(stackTop / operand);
-            case ImpParser.ARNC_MUL -> new NatValue(stackTop * operand);
+            case ImpParser.ARNC_DIV -> new FloatValue(stackTop / operand);
+            case ImpParser.ARNC_MUL -> new FloatValue(stackTop * operand);
             default -> null;
         };
     }
 
     @Override
     public Value visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx) {
-        int stackTop = 0;
-        int operand = visitNatArncExp(ctx.arncExp());
+        float stackTop = 0;
+        float operand = visitFloatArncExp(ctx.arncExp());
 
         //TODO : SUPPORTO PER I FLOAT?
 
         return switch (ctx.aop.getType()) {
-            case ImpParser.ARNC_PLUS -> new NatValue(stackTop + operand);
-            case ImpParser.ARNC_MINUS -> new NatValue(stackTop - operand);
+            case ImpParser.ARNC_PLUS -> new FloatValue(stackTop + operand);
+            case ImpParser.ARNC_MINUS -> new FloatValue(stackTop - operand);
             default -> null;
         };
     }
@@ -634,8 +634,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
-        int stackTop = 0;
-        int operand = visitNatArncExp(ctx.arncExp());
+        float stackTop = 0;
+        float operand = visitFloatArncExp(ctx.arncExp());
 
         //TODO : SUPPORTO PER I FLOAT?
 

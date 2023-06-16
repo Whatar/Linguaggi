@@ -68,7 +68,6 @@ arncOp : aop = (ARNC_DIV | ARNC_MUL) arncExp                            # arncDi
         | aop = (ARNC_PLUS | ARNC_MINUS) arncExp                        # arncPlusMinus
         | aop = (ARNC_EQUAL | ARNC_GRATER) arncExp                      # arncCmpOp
         | aop = (ARNC_OR | ARNC_AND) arncExp                            # arncLogOp
-        | arncOP arncOp                                                 # arncOpSeq
         ;
 
 INITFUN: 'fun';

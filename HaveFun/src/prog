@@ -11,7 +11,7 @@ fun AnnaKarenina(){
 	  GET UP b
 	  YOU'RE FIRED b
 	  ENOUGH TALK
-	  TALK TO THE HAND b
+	  TALK TO THE HAND a
 	YOU HAVE BEEN TERMINATED
 	}$;
 	return 42
