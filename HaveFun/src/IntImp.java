@@ -5,11 +5,13 @@ import java.util.*;
 public class IntImp extends ImpBaseVisitor<Value> {
 
     private final Conf conf;
+    private final ArncConf arncConf;
 
     private final LinkedList<String> openContexts = new LinkedList<>();
 
     public IntImp(Conf conf) {
         this.conf = conf;
+        this.arncConf = new ArncConf();
         openContexts.addLast("!general");
         // new empty global context
         conf.updateContext("!general", new HashMap<>());
@@ -461,12 +463,18 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public ArncComValue visitArncAssign(ImpParser.ArncAssignContext ctx) {
-        String id = ctx.ID().getText();
+        String id = '?'+ctx.ID().getText(); // we identify a arncVariable with a ? before the name
         ExpValue<?> v = visitArncExp(ctx.arncExp());
 
         Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());
         currentContext.put(id, v);
         conf.updateContext(openContexts.getLast(), currentContext);
+
+        // if they are linked, update the other context
+        if (arncConf.containsLinked(id, openContexts.getLast())) {
+            String linkedId = arncConf.getLinked(id, openContexts.getLast());
+            conf.updateGlobal(linkedId, v);
+        }
 
         return ArncComValue.INSTANCE;
     }
@@ -474,13 +482,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
     @Override
     public ArncComValue visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
         String globalId = ctx.ID(0).getText();
-        //dalla descrizione di SLY sembra accettare solo variabili, non formule o valori
-        String localId = ctx.ID(1).getText();
-        ExpValue<?> v = visitArncExp(ctx.arncExp());
+        String localId = '?' + ctx.ID(1).getText();
 
-        Map<String, ExpValue<?>> currentContext = conf.getContext("!global");
-        currentContext.put(globalId, v);
-        conf.updateContext("!global", currentContext);
+        Map<String, ExpValue<?>> currentContext = conf.getContext(openContexts.getLast());
+        currentContext.put(localId, conf.getGlobal(globalId));
+        conf.updateContext(openContexts.getLast(), currentContext);
+
+        arncConf.link(localId, openContexts.getLast(), globalId);
 
         return ArncComValue.INSTANCE;
     }
@@ -551,7 +559,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
     //TODO : ExpValue o ArncExpValue?
     @Override
     public Value visitArncId(ImpParser.ArncIdContext ctx) {
-        String id = ctx.ID().getText();
+        String id = '?'+ctx.ID().getText(); // we identify a arncVariable with a ? before the name
 
         ExpValue<?> ret;
         Map<String, ExpValue<?>> funC = conf.getContext(openContexts.getLast());
@@ -679,5 +687,4 @@ public class IntImp extends ImpBaseVisitor<Value> {
             default -> null;
         };
     }
-
 }
