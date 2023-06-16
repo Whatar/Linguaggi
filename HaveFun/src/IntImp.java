@@ -466,6 +466,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return (ExpValue<?>) visit(ctx);
     }
 
+
     private float visitFloatArncExp(ImpParser.ArncExpContext ctx) {
         try {
             return ((FloatValue) visitArncExp(ctx)).toJavaValue();
@@ -542,15 +543,31 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncIf(ImpParser.ArncIfContext ctx) {
-        return visitBoolArncExp(ctx.arncExp())
-                ? visitArncCom(ctx.arncCom(0))
-                : visitArncCom(ctx.arncCom(1));
+
+        if(ctx.arncCom().size() == 1){
+            return visitBoolArncExp(ctx.arncExp())
+                    ? visitArncCom(ctx.arncCom(0))
+                    : null;
+        }
+        else{
+            return visitBoolArncExp(ctx.arncExp())
+                    ? visitArncCom(ctx.arncCom(0))
+                    : visitArncCom(ctx.arncCom(1));
+        }
     }
+
 
     @Override
     public Value visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx) {
         String myVar = ctx.ID().getText();
-        ExpValue<?> stackvalue = visitArncExp(ctx.arncExp());
+        ExpValue<?> stackValue = visitArncExp(ctx.arncExp());
+        ExpValue<?> tmpValue;
+        ExpValue<?> res;
+
+        for (int i = 0; i < ctx.arncOp().size(); i++) {
+            tmpValue = visitArncExp(ctx.arncExp());
+
+        }
 
 
         return super.visitArncOpResAssign(ctx);
