@@ -473,12 +473,17 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     private boolean visitBoolArncExp(ImpParser.ArncExpContext ctx) {
-        return ((FloatValue)visitArncExp(ctx)).isTrue(); // unreachable code
+        try {
+            return (float) visitArncExp(ctx).toJavaValue() > 0f;
+        }
+        catch (Exception e){
+            return (boolean) visitArncExp(ctx).toJavaValue();
+        }
     }
 
     @Override
     public ArncComValue visitArncAssign(ImpParser.ArncAssignContext ctx) {
-        String id = ctx.ID().getText(); // we identify a arncVariable with a ? before the name
+        String id = ctx.ID().getText();
         ExpValue<?> v = visitArncExp(ctx.arncExp());
 
         Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
@@ -497,7 +502,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
     @Override
     public ArncComValue visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
         String globalId = ctx.ID(0).getText();
-        String localId = '?' + ctx.ID(1).getText();
+        String localId = ctx.ID(1).getText();
 
         Map<String, ExpValue<?>> currentContext = conf.getContext(openArncContexts.getLast());
         currentContext.put(localId, conf.getGlobal(globalId));
@@ -719,8 +724,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
             Float operand = visitFloatArncExp(ctx.arncExp());
 
             return switch (ctx.aop.getType()) {
-                case ImpParser.ARNC_EQUAL -> new BoolValue(stackTop.equals(operand));
-                case ImpParser.ARNC_GRATER -> new BoolValue(stackTop > operand);
+                case ImpParser.ARNC_EQUAL -> (BoolValue)opStack.setStackTop(new BoolValue(stackTop.equals(operand)));
+                case ImpParser.ARNC_GRATER -> (BoolValue)opStack.setStackTop(new BoolValue(stackTop > operand));
                 default -> null;
             };
         }
