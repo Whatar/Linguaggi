@@ -88,6 +88,10 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArnoldC(ImpParser.ArnoldCContext ctx) {
+        // we first need to visit each method declaration
+        for (int i = 0 ; i < ctx.arncMet().size() ; i++) {
+            visitArncMet(ctx.arncMet(i));
+        }
         return visitArncCom(ctx.arncCom());
     }
 
@@ -327,13 +331,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public ExpValue<?> visitArncMethod(ImpParser.ArncMethodContext ctx) {
+    public ExpValue<?> visitArncMet(ImpParser.ArncMetContext ctx) {
         Map<String, ExpValue<?>> args = new HashMap<>();
 
         for (int i = 1; i < ctx.ID().size(); i++) {
-            if (ctx.ID(i).getText().equals(","))
-                continue;
-            String id = ctx.ID(0).getText();
+            String id = ctx.ID(i).getText();
 
             if (!args.containsKey(id)) {
                 args.put(id, new NatValue(0));
@@ -442,6 +444,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return null;
     }
 
+    @Override
+    public Value visitArncMetAss(ImpParser.ArncMetAssContext ctx) {
+
+    }
+
     private ArncComValue visitArncCom(ImpParser.ArncComContext ctx) {
         if (ctx == null){
             return null;
@@ -524,6 +531,16 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) {
+        return super.visitArncMetNonVoid(ctx);
+    }
+
+    @Override
+    public Value visitArncMetVoid(ImpParser.ArncMetVoidContext ctx) {
+        return super.visitArncMetVoid(ctx);
+    }
+
+    @Override
     public Value visitArncIf(ImpParser.ArncIfContext ctx) {
 
         if(ctx.arncCom().size() == 1){
@@ -550,6 +567,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncSeq(ImpParser.ArncSeqContext ctx) {
+        // write line and column of the error
+        System.out.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
         visitArncCom(ctx.arncCom(0));
         return visitArncCom(ctx.arncCom(1));
     }
@@ -573,8 +592,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public ExpValue<?> visitArncFunCall(ImpParser.ArncFunCallContext ctx) {
-        // TODO: testare, finire
+    public ExpValue<?> visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
         String id = ctx.ID().getText();
 
         if (!arncConf.containsFunction(id)) {
@@ -584,36 +602,46 @@ public class IntImp extends ImpBaseVisitor<Value> {
             System.exit(1);
         }
 
-        List<ImpParser.ArncExpContext> exps = ctx.arncExp();
-        List<ExpValue<?>> expValues = new ArrayList<>();
-        for (ImpParser.ArncExpContext exp : exps) {
-            expValues.add(visitArncExp(exp));
+        // evaluate the arguments
+        Map<String, ExpValue<?>> argsCopy = new HashMap<>(arncConf.getFunction(id).getArgs());
+        if (argsCopy.size() != ctx.arncExp().size()) {
+            System.err.println("Function " + id + " called with the wrong number of arguments");
+            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+
+            System.exit(1);
         }
 
+        // evaluate the arguments
+        for (int i = 0; i < ctx.arncExp().size(); i++) {
+            String argId = argsCopy.keySet().toArray()[i].toString();
+            ExpValue<?> argValue = visitArncExp(ctx.arncExp(i));
+            argsCopy.put(argId, argValue);
+        }
+
+        if(arncConf.containsContext(id)){
+            id = "!"+id;
+        }
+        arncConf.updateContext(id, argsCopy);
         openArncContexts.addLast(id);
 
-        ExpValue<?> ret = visitArncMethod(arncConf.getFunction(id).getCtx());
+        // if there is a exp in the context of the function, then is non void
+        ExpValue<?> ret = null;
+        if (arncConf.getFunction(id).getCtx().arncMetBody().getChild(1) != null) {
+            visitArncCom((ImpParser.ArncComContext) arncConf.getFunction(id).getCtx().arncMetBody().getChild(1));
+            ret = visitArncExp((ImpParser.ArncExpContext) arncConf.getFunction(id).getCtx().arncMetBody().getChild(3));
+        } else {
+            visitArncCom((ImpParser.ArncComContext) arncConf.getFunction(id).getCtx().arncMetBody().getChild(0));
+        }
+
 
         openArncContexts.removeLast();
+
+        // avoid leaving stuff in the memory
+        arncConf.removeContext(id);
 
         return ret;
     }
 
-    @Override
-    public Value visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
-        String myVar = ctx.ID(1).getText();
-        String method = ctx.ID(2).getText();
-
-        List<ImpParser.ArncExpContext> args = ctx.arncExp();
-        List<ExpValue<?>> argsValues = new ArrayList<>();
-        for (int i = 0; i < ctx.arncExp().size(); i++) {
-            argsValues.add(visitArncExp(ctx.arncExp(i)));
-        }
-
-        return null;
-    }
-
-    //NAT is considered FLOAT
     @Override
     public Value visitArncNat(ImpParser.ArncNatContext ctx) {
         return new FloatValue(Float.parseFloat(ctx.NAT().getText()));
@@ -657,28 +685,23 @@ public class IntImp extends ImpBaseVisitor<Value> {
         ExpValue<?> res;
 
         for (int i = 0; i < ctx.arncOp().size(); i++) {
-            System.out.println("SOno qui");
             visitArncOp(ctx.arncOp(i));
-            System.out.println(visitArncOp(ctx.arncOp(i)));
             stackValue = (ExpValue<?>) opStack.getStackTop();
             Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
             currentContext.put(myVar, stackValue);
             arncConf.updateContext(openArncContexts.getLast(), currentContext);
         }
-        System.out.println("Stack Pop");
         opStack.pop();
 
         return null;
     }
 
     @Override
-    public Value visitArncDivMul(ImpParser.ArncDivMulContext ctx) {
+    public FloatValue visitArncDivMul(ImpParser.ArncDivMulContext ctx) {
 
         if(opStack.getStackTop() instanceof FloatValue){
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
-            //System.out.println("stackTop -> " + stackTop);
             Float operand = visitFloatArncExp(ctx.arncExp());
-            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_MUL -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop * operand));
@@ -694,9 +717,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
     public FloatValue visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx) {
         if(opStack.getStackTop() instanceof FloatValue){
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
-            //System.out.println("stackTop -> " + stackTop);
             Float operand = visitFloatArncExp(ctx.arncExp());
-            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_PLUS -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop + operand));
@@ -709,13 +730,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
+    public BoolValue visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
 
         if(opStack.getStackTop() instanceof FloatValue){
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
-            //System.out.println("stackTop -> " + stackTop);
             Float operand = visitFloatArncExp(ctx.arncExp());
-            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_EQUAL -> new BoolValue(stackTop.equals(operand));
@@ -728,18 +747,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visit(ParseTree tree) {
-        return super.visit(tree);
-    }
-
-    @Override
-    public Value visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
+    public BoolValue visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
 
         if(opStack.getStackTop() instanceof BoolValue){
             Boolean stackTop = ((BoolValue) opStack.getStackTop()).toJavaValue();
-            //System.out.println("stackTop -> " + stackTop);
             Boolean operand = visitBoolArncExp(ctx.arncExp());
-            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_AND -> (BoolValue)opStack.setStackTop(new BoolValue(stackTop && operand));
@@ -750,21 +762,4 @@ public class IntImp extends ImpBaseVisitor<Value> {
         System.err.println("YOUR INVITATION IS NOT BOOLEAN!");
         return null;
     }
-
-
-    @Override
-    public Value visitArncMetVoid(ImpParser.ArncMetVoidContext ctx) {
-
-
-
-        return null;
-    }
-
-    @Override
-    public Value visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) {
-        return super.visitArncMetNonVoid(ctx);
-    }
-
-
-
 }

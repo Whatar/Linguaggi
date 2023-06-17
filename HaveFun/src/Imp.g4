@@ -44,8 +44,7 @@ arncCom : ARNC_PRINT arncExp                                        # arncPrint
      | arncCom arncCom                                              # arncSeq
      ;
 
-arncMet : ARNC_METHOD ID (ARNC_METARGS ID)* arncMetBody ARNC_METCLOSE   # arncMethod
-        ;
+arncMet : ARNC_METHOD ID (ARNC_METARGS ID)* arncMetBody ARNC_METCLOSE;
 
 arncMetBody : ARNC_METNONVOID arncCom arncExp ARNC_RET              # arncMetNonVoid
             | arncCom arncExp                                       # arncMetVoid
