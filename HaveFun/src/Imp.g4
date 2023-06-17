@@ -58,7 +58,6 @@ arncExp : NAT                                                       # arncNat
          | ARNC_VALONE                                              # arncValone
          | ARNC_VALZERO                                             # arncValzero
          | ID                                                       # arncId
-         | ID LPAR arncExp* RPAR                                    # arncFunCall   //check if needed
          ;
 
 arncOp : aop = (ARNC_DIV | ARNC_MUL) arncExp                            # arncDivMul

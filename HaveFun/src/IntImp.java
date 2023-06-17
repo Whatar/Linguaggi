@@ -439,12 +439,12 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return null;
     }
 
-    private ArncComValue visitArncCom(ImpParser.ArncComContext ctx) {
+    private Value visitArncCom(ImpParser.ArncComContext ctx) {
         if (ctx == null){
             return null;
         }
         else {
-            return (ArncComValue) visit(ctx);
+            return visit(ctx);
         }
     }
 
@@ -617,6 +617,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         // avoid leaving stuff in the memory
         arncConf.removeContext(id);
+
+        arncConf.getContext(openArncContexts.getLast()).put(ctx.ID(0).getText(), ret);
 
         return ret;
     }
