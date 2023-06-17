@@ -87,16 +87,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArnoldC(ImpParser.ArnoldCContext ctx) {
-        return visitArnc(ctx.arncCom());
-    }
-
-    private Value visitArnc(ImpParser.ArncComContext ctx) {
-        if (ctx == null) {
-            return null;
-        }
-        else {
-            return visit(ctx);
-        }
+        return visitArncCom(ctx.arncCom());
     }
 
     @Override
@@ -441,6 +432,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //we create a stack that all ArncOps can access
+    ArncConf.opStack opStack = new ArncConf.opStack();
 
     @Override
     public ExpValue<?> visitArncPrint(ImpParser.ArncPrintContext ctx) {
@@ -466,6 +459,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return (ExpValue<?>) visit(ctx);
     }
 
+    private ExpValue<?> visitArncOp(ImpParser.ArncOpContext ctx) {
+        return (ExpValue<?>) visit(ctx);
+    }
 
     private float visitFloatArncExp(ImpParser.ArncExpContext ctx) {
         try {
@@ -532,6 +528,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
+        return super.visitArncMetCall(ctx);
+    }
+
+    @Override
     public Value visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) {
         return super.visitArncMetNonVoid(ctx);
     }
@@ -554,23 +555,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
                     ? visitArncCom(ctx.arncCom(0))
                     : visitArncCom(ctx.arncCom(1));
         }
-    }
-
-
-    @Override
-    public Value visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx) {
-        String myVar = ctx.ID().getText();
-        ExpValue<?> stackValue = visitArncExp(ctx.arncExp());
-        ExpValue<?> tmpValue;
-        ExpValue<?> res;
-
-        for (int i = 0; i < ctx.arncOp().size(); i++) {
-            tmpValue = visitArncExp(ctx.arncExp());
-
-        }
-
-
-        return super.visitArncOpResAssign(ctx);
     }
 
     @Override
@@ -670,61 +654,97 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitArncOpResAssign(ImpParser.ArncOpResAssignContext ctx) {
+        String myVar = ctx.ID().getText();
+        ExpValue<?> stackValue = visitArncExp(ctx.arncExp());
+        opStack.push(stackValue);
+        ExpValue<?> res;
+
+        for (int i = 0; i < ctx.arncOp().size(); i++) {
+            System.out.println("SOno qui");
+            visitArncOp(ctx.arncOp(i));
+            System.out.println(visitArncOp(ctx.arncOp(i)));
+            stackValue = (ExpValue<?>) opStack.getStackTop();
+            Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
+            currentContext.put(myVar, stackValue);
+            arncConf.updateContext(openArncContexts.getLast(), currentContext);
+        }
+        System.out.println("Stack Pop");
+        opStack.pop();
+
+        return null;
+    }
+
+    @Override
     public Value visitArncDivMul(ImpParser.ArncDivMulContext ctx) {
-        float stackTop = 0;
-        float operand = visitFloatArncExp(ctx.arncExp());
 
-        //TODO : SUPPORTO PER I FLOAT?
+        if(opStack.getStackTop() instanceof FloatValue){
+            Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
+            System.out.println("stackTop -> " + stackTop);
+            Float operand = visitFloatArncExp(ctx.arncExp());
+            System.out.println("operand -> " + operand);
 
-        return switch (ctx.aop.getType()) {
-            case ImpParser.ARNC_DIV -> new FloatValue(stackTop / operand);
-            case ImpParser.ARNC_MUL -> new FloatValue(stackTop * operand);
-            default -> null;
-        };
+            return switch (ctx.aop.getType()) {
+                case ImpParser.ARNC_MUL -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop * operand));
+                case ImpParser.ARNC_DIV -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop / operand));
+                default -> null;
+            };
+        }
+        return null;
     }
 
     @Override
-    public Value visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx) {
-        float stackTop = 0;
-        float operand = visitFloatArncExp(ctx.arncExp());
+    public FloatValue visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx) {
+        if(opStack.getStackTop() instanceof FloatValue){
+            Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
+            System.out.println("stackTop -> " + stackTop);
+            Float operand = visitFloatArncExp(ctx.arncExp());
+            System.out.println("operand -> " + operand);
 
-        //TODO : SUPPORTO PER I FLOAT?
-
-        return switch (ctx.aop.getType()) {
-            case ImpParser.ARNC_PLUS -> new FloatValue(stackTop + operand);
-            case ImpParser.ARNC_MINUS -> new FloatValue(stackTop - operand);
-            default -> null;
-        };
-    }
-
-    @Override
-    public Value visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
-        return super.visitArncMetCall(ctx);
+            return switch (ctx.aop.getType()) {
+                case ImpParser.ARNC_PLUS -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop + operand));
+                case ImpParser.ARNC_MINUS -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop - operand));
+                default -> null;
+            };
+        }
+        return null;
     }
 
     @Override
     public Value visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
-        float stackTop = 0;
-        float operand = visitFloatArncExp(ctx.arncExp());
 
-        //TODO : SUPPORTO PER I FLOAT?
+        if(opStack.getStackTop() instanceof FloatValue){
+            System.out.println("Ciao");
+            Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
+            System.out.println("stackTop -> " + stackTop);
+            Float operand = visitFloatArncExp(ctx.arncExp());
+            System.out.println("operand -> " + operand);
 
-        return switch (ctx.aop.getType()) {
-            case ImpParser.ARNC_EQUAL -> new BoolValue(stackTop == operand);
-            case ImpParser.ARNC_GRATER -> new BoolValue(stackTop > operand);
-            default -> null;
-        };
+            return switch (ctx.aop.getType()) {
+                case ImpParser.ARNC_EQUAL -> new BoolValue(stackTop.equals(operand));
+                case ImpParser.ARNC_GRATER -> new BoolValue(stackTop > operand);
+                default -> null;
+            };
+        }
+        System.out.println("LOGIC problem");
+        return null;
     }
 
     @Override
     public Value visitArncLogOp(ImpParser.ArncLogOpContext ctx) {
-        boolean stackTop = false;
-        boolean operand = visitBoolArncExp(ctx.arncExp());
 
-        return switch (ctx.aop.getType()) {
-            case ImpParser.AND -> new BoolValue(stackTop && operand);
-            case ImpParser.OR -> new BoolValue(stackTop || operand);
-            default -> null;
-        };
+        if(opStack.getStackTop() instanceof BoolValue){
+            Boolean stackTop = ((BoolValue) opStack.getStackTop()).toJavaValue();
+            System.out.println("stackTop -> " + stackTop);
+            Boolean operand = visitBoolArncExp(ctx.arncExp());
+            System.out.println("operand -> " + operand);
+
+            return switch (ctx.aop.getType()) {
+                case ImpParser.ARNC_AND -> (BoolValue)opStack.setStackTop(new BoolValue(stackTop && operand));
+                case ImpParser.ARNC_OR -> (BoolValue)opStack.setStackTop(new BoolValue(stackTop || operand));
+                default -> null;
+            };
+        }
+        return null;
     }
 }
