@@ -493,24 +493,29 @@ public class IntImp extends ImpBaseVisitor<Value> {
         // if they are linked, update the other context
         if (arncConf.containsLinked(id, openArncContexts.getLast())) {
             String linkedId = arncConf.getLinked(id, openArncContexts.getLast());
-            conf.updateGlobal(linkedId, v);
+            Map<String, ExpValue<?>> globalContext = arncConf.getContext("!global");
+            globalContext.put(linkedId, v);
+            conf.updateContext("!global", globalContext);
         }
 
         return ArncComValue.INSTANCE;
     }
 
     @Override
-    public ArncComValue visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
-        String globalId = ctx.ID(0).getText();
-        String localId = ctx.ID(1).getText();
+    public ExpValue<?> visitArncGlobalAssign(ImpParser.ArncGlobalAssignContext ctx) {
+        String localId = ctx.ID(0).getText();
+        String globalId = ctx.ID(1).getText();
+        String linkedId = ctx.ID(2).getText();
 
-        Map<String, ExpValue<?>> currentContext = conf.getContext(openArncContexts.getLast());
-        currentContext.put(localId, conf.getGlobal(globalId));
+        arncConf.link(linkedId, openArncContexts.getLast(), globalId);
+
+        Map<String, ExpValue<?>> globalContext = conf.getContext("!global");
+
+        Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
+        currentContext.put(localId, new FloatValue(Float.parseFloat(globalContext.get(globalId).toString())));
         arncConf.updateContext(openArncContexts.getLast(), currentContext);
 
-        arncConf.link(localId, openArncContexts.getLast(), globalId);
-
-        return ArncComValue.INSTANCE;
+        return globalContext.get(globalId);
     }
 
     @Override
@@ -675,6 +680,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
             stackValue = (ExpValue<?>) opStack.getStackTop();
             Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
             currentContext.put(myVar, stackValue);
+            // if they are linked, update the other context
+            if (arncConf.containsLinked(myVar, openArncContexts.getLast())) {
+                String linkedId = arncConf.getLinked(myVar, openArncContexts.getLast());
+                Map<String, ExpValue<?>> globalContext = conf.getContext("!global");
+                globalContext.put(linkedId, stackValue);
+                conf.updateContext("!global", globalContext);
+            }
             arncConf.updateContext(openArncContexts.getLast(), currentContext);
         }
         opStack.pop();

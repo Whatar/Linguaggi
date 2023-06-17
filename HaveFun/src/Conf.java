@@ -6,6 +6,8 @@ import java.util.Map;
 
 
 public class Conf {
+
+
     // We need to save the context of each function call, so we can visit the function body each time it is called
     public static class FunctionContext {
         private final ImpParser.FunContext ctx;
@@ -38,9 +40,6 @@ public class Conf {
     // Basically we have a map of contexts for each function call
     private final Map<String, Map> contexts = new HashMap<>();
 
-    // We also have a global map of variables
-    private final Map<String, ExpValue<?>> globalMap = new HashMap<>();
-
     // We also have a map of declared functions
     private final Map<String, FunctionContext> functions = new HashMap<>();
 
@@ -54,18 +53,6 @@ public class Conf {
 
     public void update(String id, ExpValue<?> v) {
         map.put(id, v);
-    }
-
-    public boolean containsGlobal(String id) {
-        return globalMap.containsKey(id);
-    }
-
-    public ExpValue<?> getGlobal(String id) {
-        return globalMap.get(id);
-    }
-
-    public void updateGlobal(String id, ExpValue<?> v) {
-        globalMap.put(id, v);
     }
 
     public boolean containsContext(String id) {

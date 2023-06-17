@@ -320,13 +320,6 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArncId(ImpParser.ArncIdContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arncFunCall}
-	 * labeled alternative in {@link ImpParser#arncExp}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncFunCall(ImpParser.ArncFunCallContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arncDivMul}
 	 * labeled alternative in {@link ImpParser#arncOp}.
 	 * @param ctx the parse tree
