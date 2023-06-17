@@ -444,11 +444,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return null;
     }
 
-    @Override
-    public Value visitArncMetAss(ImpParser.ArncMetAssContext ctx) {
-
-    }
-
     private ArncComValue visitArncCom(ImpParser.ArncComContext ctx) {
         if (ctx == null){
             return null;
@@ -592,8 +587,23 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitArncMetAss(ImpParser.ArncMetAssContext ctx) {
+        String myVar = ctx.ID().getText();
+        ExpValue<?> stackValue = visitArncExp(ctx.arncExp());
+        opStack.push(stackValue);
+
+
+        Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
+        currentContext.put(myVar, stackValue);
+        arncConf.updateContext(openArncContexts.getLast(), currentContext);
+        return visitArncMetCall(ctx.);
+
+    }
+
+    @Override
     public ExpValue<?> visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
         String id = ctx.ID().getText();
+        opStack.setStackTop()
 
         if (!arncConf.containsFunction(id)) {
             System.err.println("Function " + id + " used but never instantiated");
