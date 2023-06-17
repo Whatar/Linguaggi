@@ -1,3 +1,4 @@
+import org.antlr.v4.runtime.tree.ParseTree;
 import value.*;
 
 import java.util.*;
@@ -441,11 +442,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
         return null;
     }
 
-    @Override
-    public Value visitArncMetAss(ImpParser.ArncMetAssContext ctx) {
-        return super.visitArncMetAss(ctx);
-    }
-
     private ArncComValue visitArncCom(ImpParser.ArncComContext ctx) {
         if (ctx == null){
             return null;
@@ -528,21 +524,6 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
-        return super.visitArncMetCall(ctx);
-    }
-
-    @Override
-    public Value visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) {
-        return super.visitArncMetNonVoid(ctx);
-    }
-
-    @Override
-    public Value visitArncMetVoid(ImpParser.ArncMetVoidContext ctx) {
-        return super.visitArncMetVoid(ctx);
-    }
-
-    @Override
     public Value visitArncIf(ImpParser.ArncIfContext ctx) {
 
         if(ctx.arncCom().size() == 1){
@@ -619,8 +600,23 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
+        String myVar = ctx.ID(1).getText();
+        String method = ctx.ID(2).getText();
+
+        List<ImpParser.ArncExpContext> args = ctx.arncExp();
+        List<ExpValue<?>> argsValues = new ArrayList<>();
+        for (int i = 0; i < ctx.arncExp().size(); i++) {
+            argsValues.add(visitArncExp(ctx.arncExp(i)));
+        }
+
+        return null;
+    }
+
+    //NAT is considered FLOAT
+    @Override
     public Value visitArncNat(ImpParser.ArncNatContext ctx) {
-        return new NatValue(Integer.parseInt(ctx.NAT().getText()));
+        return new FloatValue(Float.parseFloat(ctx.NAT().getText()));
     }
 
     @Override
@@ -680,9 +676,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         if(opStack.getStackTop() instanceof FloatValue){
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
-            System.out.println("stackTop -> " + stackTop);
+            //System.out.println("stackTop -> " + stackTop);
             Float operand = visitFloatArncExp(ctx.arncExp());
-            System.out.println("operand -> " + operand);
+            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_MUL -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop * operand));
@@ -690,6 +686,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
                 default -> null;
             };
         }
+        System.err.println("YOUR INVITATION IS NOT FLOAT!");
         return null;
     }
 
@@ -697,9 +694,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
     public FloatValue visitArncPlusMinus(ImpParser.ArncPlusMinusContext ctx) {
         if(opStack.getStackTop() instanceof FloatValue){
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
-            System.out.println("stackTop -> " + stackTop);
+            //System.out.println("stackTop -> " + stackTop);
             Float operand = visitFloatArncExp(ctx.arncExp());
-            System.out.println("operand -> " + operand);
+            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_PLUS -> (FloatValue)opStack.setStackTop(new FloatValue(stackTop + operand));
@@ -707,6 +704,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
                 default -> null;
             };
         }
+        System.err.println("YOUR INVITATION IS NOT FLOAT!");
         return null;
     }
 
@@ -714,11 +712,10 @@ public class IntImp extends ImpBaseVisitor<Value> {
     public Value visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
 
         if(opStack.getStackTop() instanceof FloatValue){
-            System.out.println("Ciao");
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
-            System.out.println("stackTop -> " + stackTop);
+            //System.out.println("stackTop -> " + stackTop);
             Float operand = visitFloatArncExp(ctx.arncExp());
-            System.out.println("operand -> " + operand);
+            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_EQUAL -> new BoolValue(stackTop.equals(operand));
@@ -726,8 +723,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
                 default -> null;
             };
         }
-        System.out.println("LOGIC problem");
+        System.err.println("YOUR INVITATION IS NOT FLOAT!");
         return null;
+    }
+
+    @Override
+    public Value visit(ParseTree tree) {
+        return super.visit(tree);
     }
 
     @Override
@@ -735,9 +737,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         if(opStack.getStackTop() instanceof BoolValue){
             Boolean stackTop = ((BoolValue) opStack.getStackTop()).toJavaValue();
-            System.out.println("stackTop -> " + stackTop);
+            //System.out.println("stackTop -> " + stackTop);
             Boolean operand = visitBoolArncExp(ctx.arncExp());
-            System.out.println("operand -> " + operand);
+            //System.out.println("operand -> " + operand);
 
             return switch (ctx.aop.getType()) {
                 case ImpParser.ARNC_AND -> (BoolValue)opStack.setStackTop(new BoolValue(stackTop && operand));
@@ -745,6 +747,24 @@ public class IntImp extends ImpBaseVisitor<Value> {
                 default -> null;
             };
         }
+        System.err.println("YOUR INVITATION IS NOT BOOLEAN!");
         return null;
     }
+
+
+    @Override
+    public Value visitArncMetVoid(ImpParser.ArncMetVoidContext ctx) {
+
+
+
+        return null;
+    }
+
+    @Override
+    public Value visitArncMetNonVoid(ImpParser.ArncMetNonVoidContext ctx) {
+        return super.visitArncMetNonVoid(ctx);
+    }
+
+
+
 }

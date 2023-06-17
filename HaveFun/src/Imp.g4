@@ -40,16 +40,15 @@ arncCom : ARNC_PRINT arncExp                                        # arncPrint
      | ARNC_OP_ASSIGN ID ARNC_OP_BASE arncExp (arncOp)* ARNC_OP_END # arncOpResAssign
      | ARNC_IF arncExp arncCom (ARNC_ELSE arncCom)? ARNC_ENDIF      # arncIf
      | ARNC_WHILE arncExp arncCom ARNC_WHEND                        # arncWhile
-     | ARNC_METASSIGN ID arncCom                                    # arncMetAss
-     | ARNC_CALLMET ID (arncExp)*                                   # arncMetCall
+     | ARNC_METASSIGN ID ARNC_CALLMET ID (arncExp)*                 # arncMetCall
      | arncCom arncCom                                              # arncSeq
      ;
 
 arncMet : ARNC_METHOD ID (ARNC_METARGS ID)* arncMetBody ARNC_METCLOSE   # arncMethod
         ;
 
-arncMetBody : ARNC_METNONVOID arncCom ARNC_RET arncExp              # arncMetNonVoid
-            | arncCom                                               # arncMetVoid
+arncMetBody : ARNC_METNONVOID arncCom arncExp ARNC_RET              # arncMetNonVoid
+            | arncCom arncExp                                       # arncMetVoid
             ;
 
 arncExp : NAT                                                       # arncNat

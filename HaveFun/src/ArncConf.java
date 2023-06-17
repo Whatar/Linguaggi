@@ -128,26 +128,19 @@ public class ArncConf {
 
     //we need to create a stack for the arncOps
     public static class opStack{
-        private ArrayList<Object> stack = new ArrayList<>();
+        private ArrayList<ExpValue<?>> stack = new ArrayList<>();
         private int stackTopPointer = 0;
 
-        public Object getStackTop() {
+        public ExpValue<?> getStackTop() {
             return stack.get(stackTopPointer - 1);
         }
 
-        public Object setStackTop(Object value){
+        public ExpValue<?> setStackTop(ExpValue<?> value){
             stack.set(stackTopPointer - 1, value);
             return value;
         }
 
-        public void printStack(){
-            for(int i = 0; i < stack.size(); i++){
-                System.out.print(stack.get(i) + ";");
-            }
-            System.out.println();
-        }
-
-        public void push(Object value){
+        public void push(ExpValue<?> value){
             System.out.println(stackTopPointer);
             stack.add(value);
             stackTopPointer ++;

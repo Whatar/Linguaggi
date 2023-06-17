@@ -237,13 +237,6 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArncAssign(ImpParser.ArncAssignContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arncMetAss}
-	 * labeled alternative in {@link ImpParser#arncCom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncMetAss(ImpParser.ArncMetAssContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arncGlobalAssign}
 	 * labeled alternative in {@link ImpParser#arncCom}.
 	 * @param ctx the parse tree
@@ -327,13 +320,6 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArncId(ImpParser.ArncIdContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code arncGlobalId}
-	 * labeled alternative in {@link ImpParser#arncExp}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncGlobalId(ImpParser.ArncGlobalIdContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncFunCall}
 	 * labeled alternative in {@link ImpParser#arncExp}.
