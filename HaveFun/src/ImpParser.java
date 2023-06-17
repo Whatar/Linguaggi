@@ -1763,10 +1763,10 @@ public class ImpParser extends Parser {
 		public ArncComContext arncCom() {
 			return getRuleContext(ArncComContext.class,0);
 		}
+		public TerminalNode ARNC_RET() { return getToken(ImpParser.ARNC_RET, 0); }
 		public ArncExpContext arncExp() {
 			return getRuleContext(ArncExpContext.class,0);
 		}
-		public TerminalNode ARNC_RET() { return getToken(ImpParser.ARNC_RET, 0); }
 		public ArncMetNonVoidContext(ArncMetBodyContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -1779,9 +1779,7 @@ public class ImpParser extends Parser {
 		public ArncComContext arncCom() {
 			return getRuleContext(ArncComContext.class,0);
 		}
-		public ArncExpContext arncExp() {
-			return getRuleContext(ArncExpContext.class,0);
-		}
+		public TerminalNode ARNC_RET() { return getToken(ImpParser.ARNC_RET, 0); }
 		public ArncMetVoidContext(ArncMetBodyContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -1806,9 +1804,9 @@ public class ImpParser extends Parser {
 				setState(269);
 				arncCom(0);
 				setState(270);
-				arncExp();
-				setState(271);
 				match(ARNC_RET);
+				setState(271);
+				arncExp();
 				}
 				break;
 			case ARNC_PRINT:
@@ -1823,7 +1821,7 @@ public class ImpParser extends Parser {
 				setState(273);
 				arncCom(0);
 				setState(274);
-				arncExp();
+				match(ARNC_RET);
 				}
 				break;
 			default:
@@ -2471,9 +2469,9 @@ public class ImpParser extends Parser {
 		"\u0000\u0000\u0000\u0108\u0106\u0001\u0000\u0000\u0000\u0109\u010a\u0003"+
 		"\u0010\b\u0000\u010a\u010b\u0005B\u0000\u0000\u010b\u000f\u0001\u0000"+
 		"\u0000\u0000\u010c\u010d\u0005D\u0000\u0000\u010d\u010e\u0003\f\u0006"+
-		"\u0000\u010e\u010f\u0003\u0012\t\u0000\u010f\u0110\u0005E\u0000\u0000"+
+		"\u0000\u010e\u010f\u0005E\u0000\u0000\u010f\u0110\u0003\u0012\t\u0000"+
 		"\u0110\u0115\u0001\u0000\u0000\u0000\u0111\u0112\u0003\f\u0006\u0000\u0112"+
-		"\u0113\u0003\u0012\t\u0000\u0113\u0115\u0001\u0000\u0000\u0000\u0114\u010c"+
+		"\u0113\u0005E\u0000\u0000\u0113\u0115\u0001\u0000\u0000\u0000\u0114\u010c"+
 		"\u0001\u0000\u0000\u0000\u0114\u0111\u0001\u0000\u0000\u0000\u0115\u0011"+
 		"\u0001\u0000\u0000\u0000\u0116\u012b\u0005\u0006\u0000\u0000\u0117\u012b"+
 		"\u0005\b\u0000\u0000\u0118\u012b\u0005\n\u0000\u0000\u0119\u012b\u0005"+
