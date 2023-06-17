@@ -141,17 +141,13 @@ public class ArncConf {
         }
 
         public void push(ExpValue<?> value){
-            System.out.println(stackTopPointer);
             stack.add(value);
             stackTopPointer ++;
-            System.out.println("push " + stackTopPointer);
         }
 
         public void pop(){
-            System.out.println(stackTopPointer);
             stack.remove(stackTopPointer - 1);
             stackTopPointer --;
-            System.out.println("pop " + stackTopPointer);
         }
     }
 

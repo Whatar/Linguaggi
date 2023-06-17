@@ -299,19 +299,19 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArncParExp(ImpParser.ArncParExpContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arncValzero}
-	 * labeled alternative in {@link ImpParser#arncExp}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArncValzero(ImpParser.ArncValzeroContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arncValone}
 	 * labeled alternative in {@link ImpParser#arncExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArncValone(ImpParser.ArncValoneContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arncValzero}
+	 * labeled alternative in {@link ImpParser#arncExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArncValzero(ImpParser.ArncValzeroContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arncId}
 	 * labeled alternative in {@link ImpParser#arncExp}.

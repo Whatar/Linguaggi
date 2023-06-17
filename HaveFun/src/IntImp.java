@@ -40,12 +40,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
         try {
             return ((NatValue) visitExp(ctx)).toJavaValue();
         } catch (ClassCastException e) {
-            System.err.println("Type mismatch exception!");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
             System.err.println(ctx.getText());
-            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
-            System.err.println("> Natural expression expected.");
+            System.err.println("Cannot cast to integer");
             System.exit(1);
         }
 
@@ -56,12 +53,9 @@ public class IntImp extends ImpBaseVisitor<Value> {
         try {
             return ((BoolValue) visitExp(ctx)).toJavaValue();
         } catch (ClassCastException e) {
-            System.err.println("Type mismatch exception!");
             System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
             System.err.println(ctx.getText());
-            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
-            System.err.println("> Boolean expression expected.");
+            System.err.println("Cannot cast to boolean");
             System.exit(1);
         }
 
@@ -87,12 +81,13 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArnoldC(ImpParser.ArnoldCContext ctx) {
+    public ComValue visitArnoldC(ImpParser.ArnoldCContext ctx) {
         // we first need to visit each method declaration
         for (int i = 0 ; i < ctx.arncMet().size() ; i++) {
             visitArncMet(ctx.arncMet(i));
         }
-        return visitArncCom(ctx.arncCom());
+        visitArncCom(ctx.arncCom());
+        return ComValue.INSTANCE;
     }
 
     @Override
@@ -478,19 +473,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     private boolean visitBoolArncExp(ImpParser.ArncExpContext ctx) {
-        try {
-            return ((BoolValue) visitArncExp(ctx)).toJavaValue();
-        } catch (ClassCastException e) {
-            System.err.println("Type mismatch exception!");
-            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
-            System.err.println(ctx.getText());
-            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
-            System.err.println("> Boolean expression expected.");
-            System.exit(1);
-        }
-
-        return false; // unreachable code
+        return ((FloatValue)visitArncExp(ctx)).isTrue(); // unreachable code
     }
 
     @Override
@@ -562,8 +545,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
     @Override
     public Value visitArncSeq(ImpParser.ArncSeqContext ctx) {
-        // write line and column of the error
-        System.out.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
+        //System.out.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
         visitArncCom(ctx.arncCom(0));
         return visitArncCom(ctx.arncCom(1));
     }
@@ -587,23 +569,8 @@ public class IntImp extends ImpBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitArncMetAss(ImpParser.ArncMetAssContext ctx) {
-        String myVar = ctx.ID().getText();
-        ExpValue<?> stackValue = visitArncExp(ctx.arncExp());
-        opStack.push(stackValue);
-
-
-        Map<String, ExpValue<?>> currentContext = arncConf.getContext(openArncContexts.getLast());
-        currentContext.put(myVar, stackValue);
-        arncConf.updateContext(openArncContexts.getLast(), currentContext);
-        return visitArncMetCall(ctx.);
-
-    }
-
-    @Override
     public ExpValue<?> visitArncMetCall(ImpParser.ArncMetCallContext ctx) {
-        String id = ctx.ID().getText();
-        opStack.setStackTop()
+        String id = ctx.ID(1).getText();
 
         if (!arncConf.containsFunction(id)) {
             System.err.println("Function " + id + " used but never instantiated");
@@ -636,9 +603,11 @@ public class IntImp extends ImpBaseVisitor<Value> {
 
         // if there is a exp in the context of the function, then is non void
         ExpValue<?> ret = null;
+
         if (arncConf.getFunction(id).getCtx().arncMetBody().getChild(1) != null) {
             visitArncCom((ImpParser.ArncComContext) arncConf.getFunction(id).getCtx().arncMetBody().getChild(1));
             ret = visitArncExp((ImpParser.ArncExpContext) arncConf.getFunction(id).getCtx().arncMetBody().getChild(3));
+            opStack.push(ret);
         } else {
             visitArncCom((ImpParser.ArncComContext) arncConf.getFunction(id).getCtx().arncMetBody().getChild(0));
         }
@@ -720,6 +689,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
             };
         }
         System.err.println("YOUR INVITATION IS NOT FLOAT!");
+        System.exit(1);
         return null;
     }
 
@@ -736,12 +706,12 @@ public class IntImp extends ImpBaseVisitor<Value> {
             };
         }
         System.err.println("YOUR INVITATION IS NOT FLOAT!");
+        System.exit(1);
         return null;
     }
 
     @Override
     public BoolValue visitArncCmpOp(ImpParser.ArncCmpOpContext ctx) {
-
         if(opStack.getStackTop() instanceof FloatValue){
             Float stackTop = ((FloatValue) opStack.getStackTop()).toJavaValue();
             Float operand = visitFloatArncExp(ctx.arncExp());
@@ -753,6 +723,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
             };
         }
         System.err.println("YOUR INVITATION IS NOT FLOAT!");
+        System.exit(1);
         return null;
     }
 
@@ -770,6 +741,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
             };
         }
         System.err.println("YOUR INVITATION IS NOT BOOLEAN!");
+        System.exit(1);
         return null;
     }
 }

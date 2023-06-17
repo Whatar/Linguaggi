@@ -311,14 +311,14 @@ public class ImpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArncValzero(ImpParser.ArncValzeroContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArncValone(ImpParser.ArncValoneContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArncValone(ImpParser.ArncValoneContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArncValzero(ImpParser.ArncValzeroContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -55,8 +55,8 @@ arncExp : NAT                                                       # arncNat
          | BOOL                                                     # arncBool
          | STRING                                                   # arncString
          | LPAR arncExp RPAR                                        # arncParExp
-         | ARNC_VALONE                                              # arncValzero
-         | ARNC_VALZERO                                             # arncValone
+         | ARNC_VALONE                                              # arncValone
+         | ARNC_VALZERO                                             # arncValzero
          | ID                                                       # arncId
          | ID LPAR arncExp* RPAR                                    # arncFunCall   //check if needed
          ;
