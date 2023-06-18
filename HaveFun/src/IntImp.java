@@ -494,7 +494,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
         if (arncConf.containsLinked(id, openArncContexts.getLast())) {
             String linkedId = arncConf.getLinked(id, openArncContexts.getLast());
             Map<String, ExpValue<?>> globalContext = arncConf.getContext("!global");
-            globalContext.put(linkedId, v);
+            globalContext.put(linkedId, new NatValue((Integer) v.toJavaValue()));
             conf.updateContext("!global", globalContext);
         }
 
@@ -684,7 +684,7 @@ public class IntImp extends ImpBaseVisitor<Value> {
             if (arncConf.containsLinked(myVar, openArncContexts.getLast())) {
                 String linkedId = arncConf.getLinked(myVar, openArncContexts.getLast());
                 Map<String, ExpValue<?>> globalContext = conf.getContext("!global");
-                globalContext.put(linkedId, stackValue);
+                globalContext.put(linkedId, new NatValue(Math.round((Float) stackValue.toJavaValue())));
                 conf.updateContext("!global", globalContext);
             }
             arncConf.updateContext(openArncContexts.getLast(), currentContext);
