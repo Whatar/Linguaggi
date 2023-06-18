@@ -24,7 +24,14 @@ public class Main {
         BailErrorStrategy strat = new BailErrorStrategy();
 
         parser.setErrorHandler(strat);
-        ParseTree tree = parser.prog();
+        ParseTree tree;
+        try{
+            tree = parser.prog();
+        }
+        catch (Exception e){
+            System.err.println("Parser error");
+            return;
+        }
 
         IntImp interpreter = new IntImp(new Conf());
         interpreter.visit(tree);
